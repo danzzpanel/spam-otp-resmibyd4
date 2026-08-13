@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Resmi By D4 BRAZIL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream: #F5F0E8;
+      --cream-dark: #EDE6DA;
+      --coral: #E8654A;
+      --coral-light: #F08B76;
+      --coral-dark: #C94E35;
+      --navy: #2D2D3F;
+      --navy-light: #4A4A5E;
+      --dusty: #D4A89A;
+      --sage: #8BA888;
+      --sage-dark: #6B8A68;
+      --mustard: #D4A843;
+      --text: #2D2D3F;
+      --text-muted: #7A7A8E;
+      --border: rgba(45, 45, 63, 0.1);
+    }
+
+    body {
+      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Risograph grain texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Decorative shapes */
+    .deco-shape {
+      position: fixed;
+      border-radius: 50%;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .deco-1 {
+      width: 400px; height: 400px;
+      background: var(--coral);
+      top: -100px; right: -100px;
+    }
+    .deco-2 {
+      width: 300px; height: 300px;
+      background: var(--sage);
+      bottom: -50px; left: -80px;
+    }
+    .deco-3 {
+      width: 200px; height: 200px;
+      background: var(--mustard);
+      top: 40%; left: -60px;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 32px 0 28px;
+      position: relative;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: var(--coral);
+      border-radius: 2px;
+    }
+
+    .header .badge {
+      display: inline-block;
+      background: var(--coral);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -1px;
+      margin-bottom: 6px;
+      line-height: 1.1;
+    }
+
+    .header p {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      font-weight: 400;
+    }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 20px rgba(45, 45, 63, 0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--coral), var(--dusty), var(--sage));
+    }
+
+    /* Input */
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .phone-input-wrapper {
+      display: flex;
+      align-items: center;
+      background: var(--cream);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .phone-input-wrapper:focus-within {
+      border-color: var(--coral);
+      box-shadow: 0 0 0 4px rgba(232, 101, 74, 0.1);
+      background: #fff;
+    }
+
+    .phone-prefix {
+      padding: 16px 14px;
+      color: var(--coral);
+      font-weight: 700;
+      font-size: 1.05rem;
+      font-family: 'Space Mono', monospace;
+      border-right: 2px solid var(--border);
+      user-select: none;
+      background: rgba(232, 101, 74, 0.04);
+    }
+
+    .phone-input {
+      flex: 1;
+      padding: 16px;
+      background: transparent;
+      border: none;
+      color: var(--navy);
+      font-size: 1.05rem;
+      font-family: 'Space Mono', monospace;
+      outline: none;
+      letter-spacing: 0.5px;
+    }
+
+    .phone-input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    .normalized-preview {
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: rgba(139, 168, 136, 0.1);
+      border: 1px solid rgba(139, 168, 136, 0.2);
+      border-radius: 10px;
+      font-size: 0.8rem;
+      color: var(--sage-dark);
+      font-family: 'Space Mono', monospace;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .normalized-preview.show { display: flex; }
+    .normalized-preview .label { color: var(--text-muted); font-family: 'Space Grotesk', sans-serif; }
+
+    .format-hint {
+      margin-top: 14px;
+      padding: 14px 16px;
+      background: var(--cream);
+      border-radius: 12px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .format-hint strong { color: var(--navy); }
+
+    .format-hint code {
+      color: var(--coral);
+      background: rgba(232, 101, 74, 0.08);
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+    }
+
+    /* Button */
+    .btn-send {
+      width: 100%;
+      padding: 18px;
+      background: var(--navy);
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-send:hover {
+      background: var(--coral);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(232, 101, 74, 0.25);
+    }
+
+    .btn-send:active { transform: translateY(0); }
+
+    .btn-send:disabled {
+      background: var(--cream-dark);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-send .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Results */
+    .results { display: none; }
+    .results.show { display: block; animation: fadeUp 0.4s ease; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-item {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 12px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-item::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+    }
+
+    .stat-success::after { background: var(--sage); }
+    .stat-failed::after { background: var(--coral); }
+    .stat-total::after { background: var(--mustard); }
+
+    .stat-item .value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      font-family: 'Space Mono', monospace;
+      line-height: 1;
+    }
+
+    .stat-item .label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    .stat-success .value { color: var(--sage-dark); }
+    .stat-failed .value { color: var(--coral); }
+    .stat-total .value { color: var(--navy); }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--cream-dark);
+      border-radius: 3px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .progress-bar .fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--sage), var(--coral));
+      border-radius: 3px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    /* Log */
+    .log-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px;
+      overflow: hidden;
+    }
+
+    .log-container {
+      background: var(--cream);
+      border-radius: 16px;
+      padding: 12px;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+
+    .log-container::-webkit-scrollbar { width: 5px; }
+    .log-container::-webkit-scrollbar-track { background: transparent; }
+    .log-container::-webkit-scrollbar-thumb { background: var(--dusty); border-radius: 3px; }
+
+    .log-item {
+      display: flex;
+      align-items: center;
+      padding: 11px 14px;
+      border-radius: 10px;
+      margin-bottom: 5px;
+      font-size: 0.85rem;
+      animation: slideIn 0.3s ease;
+      gap: 10px;
+      background: #fff;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .log-item.sending { border-left: 3px solid var(--mustard); }
+    .log-item.success { border-left: 3px solid var(--sage); }
+    .log-item.failed { border-left: 3px solid var(--coral); }
+
+    .log-item .idx {
+      font-family: 'Space Mono', monospace;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      min-width: 24px;
+      opacity: 0.7;
+    }
+
+    .log-item .icon { font-size: 0.95rem; }
+    .log-item .name { flex: 1; font-weight: 500; color: var(--navy); }
+
+    .log-item .badge {
+      font-size: 0.68rem;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-success { background: rgba(139, 168, 136, 0.15); color: var(--sage-dark); }
+    .badge-failed { background: rgba(232, 101, 74, 0.12); color: var(--coral); }
+    .badge-sending { background: rgba(212, 168, 67, 0.12); color: var(--mustard); }
+
+    .timer {
+      text-align: center;
+      font-family: 'Space Mono', monospace;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-top: 12px;
+      padding: 8px;
+    }
+
+    /* Blacklist */
+    .blacklist-msg {
+      text-align: center;
+      padding: 48px 24px;
+      animation: fadeUp 0.5s ease;
+    }
+
+    .blacklist-icon {
+      font-size: 3.5rem;
+      margin-bottom: 16px;
+      animation: wobble 2s ease infinite;
+    }
+
+    @keyframes wobble {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+
+    .blacklist-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--coral);
+      line-height: 1.6;
+    }
+
+    /* Key Modal Overlay */
+    .key-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(45, 45, 63, 0.6);
+      backdrop-filter: blur(6px);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .key-overlay.show { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .key-modal {
+      background: #fff;
+      border-radius: 24px;
+      padding: 36px 32px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(45, 45, 63, 0.2);
+      animation: scaleIn 0.35s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .key-modal::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--mustard), var(--coral));
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .key-modal .lock-icon {
+      font-size: 2.8rem;
+      margin-bottom: 12px;
+    }
+
+    .key-modal h3 {
+      font-size: 1.2rem;
+      color: var(--navy);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .key-modal p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .key-input-wrapper {
+      display: flex;
+      align-items: center;
+      background: var(--cream);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .key-input-wrapper:focus-within {
+      border-color: var(--mustard);
+      box-shadow: 0 0 0 4px rgba(212, 168, 67, 0.15);
+    }
+
+    .key-input-wrapper .icon {
+      padding: 14px 12px;
+      font-size: 1.1rem;
+      opacity: 0.5;
+    }
+
+    .key-input {
+      flex: 1;
+      padding: 14px 14px 14px 0;
+      background: transparent;
+      border: none;
+      font-size: 1rem;
+      font-family: 'Space Mono', monospace;
+      color: var(--navy);
+      outline: none;
+      letter-spacing: 2px;
+    }
+
+    .key-input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.4;
+      letter-spacing: 0;
+    }
+
+    .key-error {
+      color: var(--coral);
+      font-size: 0.78rem;
+      margin-bottom: 12px;
+      display: none;
+      font-weight: 500;
+    }
+
+    .key-error.show { display: block; animation: shake 0.4s ease; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .key-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--navy);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 10px;
+    }
+
+    .key-btn:hover {
+      background: var(--coral);
+      transform: translateY(-1px);
+    }
+
+    .key-cancel {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+      padding: 6px;
+    }
+
+    .key-cancel:hover { color: var(--coral); }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 24px 0 12px;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      opacity: 0.6;
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 16px 14px; }
+      .header h1 { font-size: 2rem; }
+      .header { padding: 24px 0 20px; }
+      .card { padding: 22px 18px; border-radius: 16px; }
+      .stats-bar { gap: 8px; }
+      .stat-item { padding: 14px 8px; border-radius: 12px; }
+      .stat-item .value { font-size: 1.5rem; }
+      .btn-send { padding: 16px; border-radius: 12px; }
+      .phone-input-wrapper { border-radius: 12px; }
+      .phone-input { padding: 14px 12px; font-size: 0.95rem; }
+      .phone-prefix { padding: 14px 12px; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deco-shape deco-1"></div>
+  <div class="deco-shape deco-2"></div>
+  <div class="deco-shape deco-3"></div>
+
+  <div class="container">
+    <div class="header">
+      <div class="badge">Multi-Platform</div>
+      <h1>OTP Blaster</h1>
+      <p>23 endpoints &middot; real-time delivery</p>
+    </div>
+
+    <div class="card">
+      <div class="input-group">
+        <label>Nomor Telepon Target</label>
+        <div class="phone-input-wrapper">
+          <span class="phone-prefix" id="prefix">+62</span>
+          <input
+            type="tel"
+            class="phone-input"
+            id="phoneInput"
+            placeholder="812-3456-7890"
+            autocomplete="off"
+          >
+        </div>
+        <div class="normalized-preview" id="normalizedPreview">
+          <span class="label">Format kirim:</span>
+          <span id="normalizedValue"></span>
+        </div>
+      </div>
+
+      <div class="format-hint">
+        <strong>Format yang didukung:</strong><br>
+        <code>081234567890</code> &middot; <code>81234567890</code> &middot; <code>+628****7890</code> &middot; <code>6281234567890</code> &middot; <code>0812-3456-7890</code>
+      </div>
+
+      <br>
+      <button class="btn-send" id="btnSend" onclick="startSpam()">
+        Kirim OTP
+      </button>
+    </div>
+
+    <div class="results" id="results">
+      <div class="stats-bar">
+        <div class="stat-item stat-success">
+          <div class="value" id="successCount">0</div>
+          <div class="label">Berhasil</div>
+        </div>
+        <div class="stat-item stat-failed">
+          <div class="value" id="failedCount">0</div>
+          <div class="label">Gagal</div>
+        </div>
+        <div class="stat-item stat-total">
+          <div class="value" id="totalCount">0</div>
+          <div class="label">Total</div>
+        </div>
+      </div>
+
+      <div class="progress-bar">
+        <div class="fill" id="progressFill"></div>
+      </div>
+
+      <div class="log-card">
+        <div class="log-container" id="logContainer"></div>
+      </div>
+      <div class="timer" id="timer"></div>
+    </div>
+
+    <div class="footer">OTP Blaster &middot; 2026</div>
+  </div>
+
+  <!-- Key Modal -->
+  <div class="key-overlay" id="keyOverlay">
+    <div class="key-modal">
+      <div class="lock-icon">🔐</div>
+      <h3>Nomor Dilindungi</h3>
+      <p>Nomor ini memerlukan key untuk melanjutkan pengiriman OTP</p>
+      <div class="key-input-wrapper">
+        <span class="icon">🔑</span>
+        <input 
+          type="password" 
+          class="key-input" 
+          id="keyInput" 
+          placeholder="Masukkan key..."
+          autocomplete="off"
+        >
+      </div>
+      <div class="key-error" id="keyError">Key salah! Coba lagi.</div>
+      <button class="key-btn" id="keySubmit" onclick="submitKey()">Lanjutkan</button>
+      <button class="key-cancel" onclick="cancelKey()">Batal</button>
+    </div>
+  </div>
+
+  <script>
+    const phoneInput = document.getElementById('phoneInput');
+    const prefix = document.getElementById('prefix');
+    const normalizedPreview = document.getElementById('normalizedPreview');
+    const normalizedValue = document.getElementById('normalizedValue');
+
+    function normalizePhone(raw) {
+      let p = raw.replace(/[^0-9]/g, '');
+      if (p.startsWith('0')) p = '62' + p.slice(1);
+      if (p.startsWith('62')) {
+        prefix.textContent = '+62';
+      } else if (p.startsWith('8')) {
+        p = '62' + p;
+        prefix.textContent = '+62';
+      } else {
+        prefix.textContent = '+';
+      }
+      return p;
+    }
+
+    function formatDisplay(num) {
+      if (num.length <= 2) return num;
+      if (num.length <= 6) return num.slice(0,2) + ' ' + num.slice(2);
+      if (num.length <= 10) return num.slice(0,2) + ' ' + num.slice(2,6) + '-' + num.slice(6);
+      return num.slice(0,2) + ' ' + num.slice(2,6) + '-' + num.slice(6,10) + '-' + num.slice(10);
+    }
+
+    phoneInput.addEventListener('input', function() {
+      const raw = this.value;
+      const normalized = normalizePhone(raw);
+      if (normalized.length >= 10) {
+        normalizedPreview.classList.add('show');
+        normalizedValue.textContent = formatDisplay(normalized);
+      } else {
+        normalizedPreview.classList.remove('show');
+      }
+    });
+
+    phoneInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') startSpam();
+    });
+
+    let isRunning = false;
+    let startTime = null;
+    let timerInterval = null;
+    let pendingPhone = null;
+
+    function startSpam(providedKey) {
+      if (isRunning) return;
+
+      const raw = phoneInput.value.trim();
+      if (!raw) {
+        phoneInput.focus();
+        return;
+      }
+
+      const phone = normalizePhone(raw);
+      if (phone.length < 10) {
+        alert('Nomor telepon terlalu pendek!');
+        return;
+      }
+
+      pendingPhone = raw;
+      isRunning = true;
+      const btn = document.getElementById('btnSend');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Memproses...';
+
+      const results = document.getElementById('results');
+      results.classList.add('show');
+      document.getElementById('successCount').textContent = '0';
+      document.getElementById('failedCount').textContent = '0';
+      document.getElementById('totalCount').textContent = '0';
+      document.getElementById('progressFill').style.width = '0%';
+      document.getElementById('logContainer').innerHTML = '';
+
+      startTime = Date.now();
+      timerInterval = setInterval(updateTimer, 100);
+
+      const body = { phone: raw };
+      if (providedKey) body.key = providedKey;
+      fetch('/api/spam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }).then(response => {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        function processStream() {
+          reader.read().then(({ done, value }) => {
+            if (done) {
+              finishSpam();
+              return;
+            }
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop();
+
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                try {
+                  const data = JSON.parse(line.slice(6));
+                  handleEvent(data);
+                } catch(e) {}
+              }
+            }
+            processStream();
+          });
+        }
+        processStream();
+      }).catch(err => {
+        addLog(0, 'System', 'failed', 'Error: ' + err.message);
+        finishSpam();
+      });
+    }
+
+    let totalEndpoints = 0;
+    let processedCount = 0;
+    let successTotal = 0;
+    let failedTotal = 0;
+
+    function handleEvent(data) {
+      switch(data.type) {
+        case 'blacklisted':
+          showBlacklistMessage(data.message);
+          finishSpam();
+          break;
+        case 'protected':
+          showKeyModal();
+          finishSpam();
+          break;
+        case 'start':
+          break;
+        case 'total':
+          totalEndpoints = data.count;
+          processedCount = 0;
+          successTotal = 0;
+          failedTotal = 0;
+          document.getElementById('totalCount').textContent = totalEndpoints;
+          break;
+        case 'sending':
+          addLog(data.idx, data.name, 'sending', 'Sending');
+          break;
+        case 'result':
+          processedCount++;
+          if (data.success) {
+            successTotal++;
+            updateLogItem(data.idx, 'success', 'OK');
+          } else {
+            failedTotal++;
+            updateLogItem(data.idx, 'failed', 'Fail');
+          }
+          document.getElementById('successCount').textContent = successTotal;
+          document.getElementById('failedCount').textContent = failedTotal;
+          document.getElementById('progressFill').style.width =
+            ((processedCount / totalEndpoints) * 100) + '%';
+          break;
+        case 'done':
+          finishSpam();
+          break;
+        case 'error':
+          addLog(0, 'System', 'failed', data.message);
+          finishSpam();
+          break;
+      }
+    }
+
+    function addLog(idx, name, status, badge) {
+      const container = document.getElementById('logContainer');
+      const div = document.createElement('div');
+      div.className = `log-item ${status}`;
+      div.id = `log-${idx}`;
+
+      let icon = '○';
+      if (status === 'success') icon = '●';
+      if (status === 'failed') icon = '×';
+
+      div.innerHTML = `
+        <span class="idx">#${idx}</span>
+        <span class="icon">${icon}</span>
+        <span class="name">${name}</span>
+        <span class="badge badge-${status}">${badge}</span>
+      `;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function updateLogItem(idx, status, badge) {
+      const el = document.getElementById(`log-${idx}`);
+      if (!el) return;
+
+      el.className = `log-item ${status}`;
+      let icon = status === 'success' ? '●' : '×';
+      el.querySelector('.icon').textContent = icon;
+      el.querySelector('.badge').className = `badge badge-${status}`;
+      el.querySelector('.badge').textContent = badge;
+    }
+
+    function updateTimer() {
+      if (!startTime) return;
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+      document.getElementById('timer').textContent = `${elapsed}s`;
+    }
+
+    function showBlacklistMessage(message) {
+      const results = document.getElementById('results');
+      results.classList.add('show');
+
+      const statsBar = results.querySelector('.stats-bar');
+      const progressBar = results.querySelector('.progress-bar');
+      if (statsBar) statsBar.style.display = 'none';
+      if (progressBar) progressBar.style.display = 'none';
+
+      const logContainer = document.getElementById('logContainer');
+      logContainer.innerHTML = `
+        <div class="blacklist-msg">
+          <div class="blacklist-icon">🛡️</div>
+          <div class="blacklist-text">${message}</div>
+        </div>
+      `;
+
+      document.getElementById('timer').textContent = '';
+    }
+
+    function showKeyModal() {
+      document.getElementById('keyOverlay').classList.add('show');
+      document.getElementById('keyError').classList.remove('show');
+      document.getElementById('keyInput').value = '';
+      setTimeout(() => document.getElementById('keyInput').focus(), 100);
+    }
+
+    function cancelKey() {
+      document.getElementById('keyOverlay').classList.remove('show');
+      const results = document.getElementById('results');
+      results.classList.remove('show');
+    }
+
+    function submitKey() {
+      const keyVal = document.getElementById('keyInput').value.trim();
+      if (!keyVal) {
+        document.getElementById('keyError').textContent = 'Key tidak boleh kosong!';
+        document.getElementById('keyError').classList.add('show');
+        return;
+      }
+      document.getElementById('keyOverlay').classList.remove('show');
+      // Retry with key
+      startSpam(keyVal);
+    }
+
+    // Enter key on modal input
+    document.addEventListener('DOMContentLoaded', function() {
+      const keyInput = document.getElementById('keyInput');
+      if (keyInput) {
+        keyInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') submitKey();
+        });
+      }
+    });
+
+    function finishSpam() {
+      isRunning = false;
+      clearInterval(timerInterval);
+      const btn = document.getElementById('btnSend');
+      btn.disabled = false;
+      btn.innerHTML = 'Kirim OTP';
+      updateTimer();
+
+      const results = document.getElementById('results');
+      const statsBar = results.querySelector('.stats-bar');
+      const progressBar = results.querySelector('.progress-bar');
+      if (statsBar) statsBar.style.display = '';
+      if (progressBar) progressBar.style.display = '';
+    }
+  </script>
+</body>
+</html>
