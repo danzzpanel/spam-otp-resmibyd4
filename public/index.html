@@ -1,18 +1,17 @@
-
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>D4 BRAZIL · OTP Exploit Pro</title>
+  <title>D4 BRAZIL · OTP Exploit Pro · Hacker Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <style>
     /* ================================================================
-       DESAIN PREMIUM — GLASSMORPHISM + GRADIENT + ANIMASI
+       ROOT & RESET
        ================================================================ */
     * {
       margin: 0;
@@ -21,28 +20,20 @@
     }
 
     :root {
-      --cream: #F5F0E8;
-      --cream-dark: #EDE6DA;
-      --coral: #E8654A;
-      --coral-light: #F08B76;
-      --coral-dark: #C94E35;
-      --navy: #2D2D3F;
-      --navy-light: #4A4A5E;
-      --dusty: #D4A89A;
-      --sage: #8BA888;
-      --sage-dark: #6B8A68;
-      --mustard: #D4A843;
-      --gold: #D4A843;
-      --text: #2D2D3F;
-      --text-muted: #7A7A8E;
-      --border: rgba(45, 45, 63, 0.08);
-      --shadow: 0 20px 60px rgba(45, 45, 63, 0.06);
-      --shadow-hover: 0 30px 80px rgba(45, 45, 63, 0.12);
-      --radius: 28px;
-      --radius-sm: 14px;
+      --neon-green: #00ff41;
+      --neon-blue: #00d4ff;
+      --neon-purple: #b026ff;
+      --dark-bg: #0a0e0a;
+      --glass-bg: rgba(0, 20, 0, 0.65);
+      --glass-border: rgba(0, 255, 65, 0.15);
+      --text-primary: #e0ffe0;
+      --text-muted: #88aa88;
+      --shadow-glow: 0 0 40px rgba(0, 255, 65, 0.08);
+      --radius: 20px;
+      --radius-sm: 12px;
       --font: 'Space Grotesk', sans-serif;
       --mono: 'Space Mono', monospace;
-      --transition: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      --transition: 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     html {
@@ -51,270 +42,243 @@
 
     body {
       font-family: var(--font);
-      background: var(--cream);
-      color: var(--text);
+      background: var(--dark-bg);
+      color: var(--text-primary);
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
     }
 
-    /* === BACKGROUND ANIMASI === */
-    .bg-particles {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .bg-particles span {
-      position: absolute;
-      display: block;
-      width: 6px;
-      height: 6px;
-      background: var(--coral);
-      opacity: 0.06;
-      border-radius: 50%;
-      animation: floatParticle 25s infinite linear;
-    }
-    .bg-particles span:nth-child(1) {
-      left: 10%;
-      animation-duration: 22s;
-      animation-delay: 0s;
-      width: 10px;
-      height: 10px;
-    }
-    .bg-particles span:nth-child(2) {
-      left: 30%;
-      animation-duration: 28s;
-      animation-delay: 3s;
-      width: 8px;
-      height: 8px;
-      background: var(--mustard);
-    }
-    .bg-particles span:nth-child(3) {
-      left: 50%;
-      animation-duration: 20s;
-      animation-delay: 5s;
-      width: 14px;
-      height: 14px;
-      background: var(--sage);
-    }
-    .bg-particles span:nth-child(4) {
-      left: 70%;
-      animation-duration: 30s;
-      animation-delay: 1s;
-      width: 6px;
-      height: 6px;
-    }
-    .bg-particles span:nth-child(5) {
-      left: 90%;
-      animation-duration: 24s;
-      animation-delay: 7s;
-      width: 12px;
-      height: 12px;
-      background: var(--mustard);
-    }
-    .bg-particles span:nth-child(6) {
-      left: 20%;
-      top: 60%;
-      animation-duration: 26s;
-      animation-delay: 2s;
-      width: 16px;
-      height: 16px;
-      background: var(--dusty);
-    }
-    .bg-particles span:nth-child(7) {
-      left: 60%;
-      top: 70%;
-      animation-duration: 32s;
-      animation-delay: 4s;
-      width: 8px;
-      height: 8px;
-      background: var(--coral);
-    }
-    .bg-particles span:nth-child(8) {
-      left: 80%;
-      top: 30%;
-      animation-duration: 18s;
-      animation-delay: 6s;
-      width: 10px;
-      height: 10px;
-      background: var(--sage);
-    }
-
-    @keyframes floatParticle {
-      0% {
-        transform: translateY(0) scale(1);
-        opacity: 0.06;
-      }
-      50% {
-        opacity: 0.12;
-      }
-      100% {
-        transform: translateY(-110vh) scale(0.5);
-        opacity: 0;
-      }
-    }
-
-    /* === GRAIN TEXTURE === */
-    body::before {
-      content: '';
+    /* ================================================================
+       MATRIX RAIN BACKGROUND (CANVAS)
+       ================================================================ */
+    #matrixCanvas {
       position: fixed;
       top: 0;
       left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 1000;
-    }
-
-    /* === DECORATIVE SHAPES === */
-    .deco-shape {
-      position: fixed;
-      border-radius: 50%;
-      opacity: 0.04;
-      pointer-events: none;
+      width: 100%;
+      height: 100%;
       z-index: 0;
-      animation: floatShape 30s infinite alternate ease-in-out;
-    }
-    .deco-1 {
-      width: 500px;
-      height: 500px;
-      background: var(--coral);
-      top: -200px;
-      right: -150px;
-      animation-duration: 35s;
-    }
-    .deco-2 {
-      width: 400px;
-      height: 400px;
-      background: var(--sage);
-      bottom: -150px;
-      left: -120px;
-      animation-duration: 28s;
-      animation-delay: 5s;
-    }
-    .deco-3 {
-      width: 300px;
-      height: 300px;
-      background: var(--mustard);
-      top: 45%;
-      left: -100px;
-      animation-duration: 32s;
-      animation-delay: 10s;
-    }
-    .deco-4 {
-      width: 200px;
-      height: 200px;
-      background: var(--dusty);
-      bottom: 30%;
-      right: -60px;
-      animation-duration: 25s;
-      animation-delay: 3s;
+      pointer-events: none;
+      opacity: 0.35;
     }
 
-    @keyframes floatShape {
+    /* ================================================================
+       OVERLAY LAYERS (glitch, scanline, vignette, grid)
+       ================================================================ */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Grid overlay */
+    .overlay-grid {
+      background-image:
+        linear-gradient(rgba(0, 255, 65, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 65, 0.015) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* Scanline overlay */
+    .overlay-scanline {
+      background: repeating-linear-gradient(0deg,
+          rgba(0, 0, 0, 0) 0px,
+          rgba(0, 0, 0, 0) 2px,
+          rgba(0, 255, 65, 0.015) 2px,
+          rgba(0, 255, 65, 0.015) 4px);
+      background-size: 100% 4px;
+      animation: scanMove 8s linear infinite;
+    }
+    @keyframes scanMove {
       0% {
-        transform: translate(0, 0) scale(1) rotate(0deg);
-      }
-      50% {
-        transform: translate(40px, -30px) scale(1.05) rotate(5deg);
+        background-position: 0 0;
       }
       100% {
-        transform: translate(-20px, 20px) scale(0.95) rotate(-3deg);
+        background-position: 0 100%;
       }
     }
 
-    /* === GLOW ORB === */
+    /* Vignette overlay */
+    .overlay-vignette {
+      background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.7) 100%);
+    }
+
+    /* Glitch overlay (random flicker) */
+    .overlay-glitch {
+      background: transparent;
+      animation: glitchFlicker 6s infinite;
+    }
+    @keyframes glitchFlicker {
+      0%,
+      95%,
+      100% {
+        opacity: 0;
+      }
+      96% {
+        opacity: 0.08;
+        background: rgba(0, 255, 65, 0.1);
+        transform: translateX(2px);
+      }
+      97% {
+        opacity: 0.05;
+        background: rgba(0, 255, 65, 0.08);
+        transform: translateX(-2px);
+      }
+      98% {
+        opacity: 0.1;
+        background: rgba(0, 255, 65, 0.12);
+        transform: translateX(1px);
+      }
+    }
+
+    /* Noise overlay (grain) */
+    .overlay-noise {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.5;
+    }
+
+    /* ================================================================
+       GLOW ORBS (hacker style)
+       ================================================================ */
     .glow-orb {
       position: fixed;
       border-radius: 50%;
-      filter: blur(80px);
+      filter: blur(100px);
       pointer-events: none;
       z-index: 0;
-      opacity: 0.12;
+      opacity: 0.08;
     }
     .glow-orb-1 {
-      width: 400px;
-      height: 400px;
-      background: var(--coral);
-      top: -100px;
+      width: 500px;
+      height: 500px;
+      background: var(--neon-green);
+      top: -150px;
       right: -100px;
-      animation: pulseGlow 8s infinite alternate;
+      animation: pulseOrb 12s infinite alternate;
     }
     .glow-orb-2 {
+      width: 400px;
+      height: 400px;
+      background: var(--neon-purple);
+      bottom: -100px;
+      left: -80px;
+      animation: pulseOrb 16s infinite alternate-reverse;
+    }
+    .glow-orb-3 {
       width: 300px;
       height: 300px;
-      background: var(--sage);
-      bottom: -50px;
-      left: -80px;
-      animation: pulseGlow 10s infinite alternate-reverse;
+      background: var(--neon-blue);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulseOrb 20s infinite alternate;
+      opacity: 0.04;
     }
-    @keyframes pulseGlow {
+    @keyframes pulseOrb {
       0% {
+        transform: scale(1) translate(0, 0);
         opacity: 0.06;
-        transform: scale(1);
       }
       100% {
-        opacity: 0.15;
-        transform: scale(1.1);
+        transform: scale(1.3) translate(30px, -30px);
+        opacity: 0.12;
       }
     }
 
-    /* === CONTAINER === */
-    .container {
-      position: relative;
-      z-index: 1;
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 24px 20px 40px;
+    /* ================================================================
+       TERMINAL CURSOR DECORATION
+       ================================================================ */
+    .terminal-cursor {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--neon-green);
+      opacity: 0.3;
+      z-index: 2;
+      letter-spacing: 1px;
+      pointer-events: none;
+      animation: blinkCursor 1.2s infinite;
+    }
+    @keyframes blinkCursor {
+      0%,
+      100% {
+        opacity: 0.3;
+      }
+      50% {
+        opacity: 0.05;
+      }
     }
 
-    /* === MARQUEE / RUNNING TEXT === */
+    /* ================================================================
+       CONTAINER
+       ================================================================ */
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px 16px 100px;
+    }
+
+    /* ================================================================
+       MARQUEE / RUNNING TEXT (hacker style)
+       ================================================================ */
     .marquee-wrap {
-      background: var(--navy);
-      color: var(--cream);
-      padding: 10px 0;
+      background: rgba(0, 20, 0, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
       border-radius: 60px;
+      padding: 10px 0;
       margin-bottom: 20px;
       overflow: hidden;
       position: relative;
-      box-shadow: 0 4px 30px rgba(45, 45, 63, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 0 30px rgba(0, 255, 65, 0.05);
     }
     .marquee-wrap::before {
-      content: '';
+      content: '>';
       position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent 0%, rgba(232, 101, 74, 0.05) 50%, transparent 100%);
-      pointer-events: none;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--neon-green);
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 1.1rem;
+      opacity: 0.8;
+      z-index: 2;
+      text-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
     }
     .marquee {
       display: flex;
       white-space: nowrap;
       animation: marqueeScroll 28s linear infinite;
       gap: 50px;
+      padding-left: 40px;
     }
     .marquee span {
-      font-size: 0.9rem;
+      font-family: var(--mono);
+      font-size: 0.8rem;
       font-weight: 500;
       letter-spacing: 1.2px;
       text-transform: uppercase;
-      opacity: 0.8;
+      opacity: 0.7;
       display: flex;
       align-items: center;
       gap: 12px;
-      font-family: var(--mono);
     }
     .marquee span i {
-      color: var(--mustard);
-      font-size: 1rem;
+      color: var(--neon-green);
+      font-size: 0.9rem;
       opacity: 1;
     }
     .marquee span .highlight {
-      color: var(--mustard);
+      color: var(--neon-green);
       font-weight: 700;
+      text-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
     }
     @keyframes marqueeScroll {
       0% {
@@ -325,10 +289,12 @@
       }
     }
 
-    /* === HEADER === */
+    /* ================================================================
+       HEADER
+       ================================================================ */
     .header {
       text-align: center;
-      padding: 28px 0 24px;
+      padding: 24px 0 20px;
       position: relative;
     }
     .header::after {
@@ -337,74 +303,79 @@
       bottom: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 80px;
-      height: 4px;
-      background: linear-gradient(90deg, var(--coral), var(--mustard), var(--sage));
-      border-radius: 2px;
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+      box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
     }
     .header .badge {
       display: inline-block;
-      background: linear-gradient(135deg, var(--coral), var(--coral-dark));
-      color: #fff;
-      font-size: 0.65rem;
+      background: rgba(0, 255, 65, 0.06);
+      border: 1px solid rgba(0, 255, 65, 0.15);
+      color: var(--neon-green);
+      font-size: 0.6rem;
       font-weight: 700;
       padding: 6px 18px;
       border-radius: 30px;
-      letter-spacing: 1.8px;
+      letter-spacing: 2px;
       text-transform: uppercase;
       margin-bottom: 14px;
-      box-shadow: 0 4px 20px rgba(232, 101, 74, 0.2);
+      font-family: var(--mono);
+      box-shadow: 0 0 30px rgba(0, 255, 65, 0.04);
     }
     .header h1 {
       font-family: var(--font);
       font-size: 2.8rem;
       font-weight: 800;
-      color: var(--navy);
+      color: var(--text-primary);
       letter-spacing: -1.5px;
       margin-bottom: 4px;
       line-height: 1.1;
+      text-shadow: 0 0 40px rgba(0, 255, 65, 0.08);
     }
     .header h1 .highlight {
-      background: linear-gradient(135deg, var(--coral), var(--mustard));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--neon-green);
+      text-shadow: 0 0 40px rgba(0, 255, 65, 0.15);
     }
     .header .subtitle {
       color: var(--text-muted);
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 400;
       margin-top: 4px;
+      font-family: var(--mono);
     }
     .header .team-tag {
       display: inline-block;
       margin-top: 10px;
-      background: rgba(139, 168, 136, 0.08);
+      background: rgba(0, 255, 65, 0.03);
       padding: 4px 18px;
       border-radius: 30px;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 600;
-      color: var(--sage-dark);
-      border: 1px solid rgba(139, 168, 136, 0.12);
+      color: var(--text-muted);
+      border: 1px solid rgba(0, 255, 65, 0.06);
       letter-spacing: 0.8px;
+      font-family: var(--mono);
     }
 
-    /* === CARD === */
+    /* ================================================================
+       CARD (glassmorphism hacker)
+       ================================================================ */
     .card {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius);
-      padding: 32px 30px;
+      padding: 30px 28px;
       margin-bottom: 24px;
-      box-shadow: var(--shadow), 0 0 0 1px rgba(255, 255, 255, 0.3);
+      box-shadow: var(--shadow-glow), 0 0 0 1px rgba(0, 255, 65, 0.03);
       position: relative;
       overflow: hidden;
       transition: var(--transition);
     }
     .card:hover {
-      box-shadow: var(--shadow-hover), 0 0 0 1px rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 60px rgba(0, 255, 65, 0.04), 0 0 0 1px rgba(0, 255, 65, 0.06);
     }
     .card::before {
       content: '';
@@ -412,64 +383,70 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--coral), var(--dusty), var(--sage), var(--mustard));
-      background-size: 300% 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+      opacity: 0.3;
       animation: shimmerBorder 6s infinite linear;
     }
     @keyframes shimmerBorder {
       0% {
-        background-position: 0% 0%;
+        opacity: 0.1;
+      }
+      50% {
+        opacity: 0.5;
       }
       100% {
-        background-position: 300% 0%;
+        opacity: 0.1;
       }
     }
 
-    /* === INPUT === */
+    /* ================================================================
+       INPUT
+       ================================================================ */
     .input-group {
       margin-bottom: 18px;
     }
     .input-group label {
       display: block;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
       margin-bottom: 8px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.2px;
+      font-family: var(--mono);
     }
     .phone-input-wrapper {
       display: flex;
       align-items: center;
-      background: var(--cream);
-      border: 2px solid var(--border);
+      background: rgba(0, 20, 0, 0.4);
+      border: 1px solid rgba(0, 255, 65, 0.12);
       border-radius: var(--radius-sm);
       overflow: hidden;
       transition: var(--transition);
     }
     .phone-input-wrapper:focus-within {
-      border-color: var(--coral);
-      box-shadow: 0 0 0 4px rgba(232, 101, 74, 0.08);
-      background: #fff;
+      border-color: var(--neon-green);
+      box-shadow: 0 0 0 3px rgba(0, 255, 65, 0.06);
+      background: rgba(0, 20, 0, 0.6);
     }
     .phone-prefix {
       padding: 16px 14px;
-      color: var(--coral);
+      color: var(--neon-green);
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-family: var(--mono);
-      border-right: 2px solid var(--border);
+      border-right: 1px solid rgba(0, 255, 65, 0.08);
       user-select: none;
-      background: rgba(232, 101, 74, 0.04);
+      background: rgba(0, 255, 65, 0.02);
     }
     .phone-input {
       flex: 1;
       padding: 16px;
       background: transparent;
       border: none;
-      color: var(--navy);
-      font-size: 1.05rem;
+      color: var(--text-primary);
+      font-size: 1rem;
       font-family: var(--mono);
       outline: none;
       letter-spacing: 0.5px;
@@ -478,14 +455,15 @@
       color: var(--text-muted);
       opacity: 0.4;
     }
+
     .normalized-preview {
       margin-top: 10px;
       padding: 10px 14px;
-      background: rgba(139, 168, 136, 0.08);
-      border: 1px solid rgba(139, 168, 136, 0.15);
+      background: rgba(0, 255, 65, 0.03);
+      border: 1px solid rgba(0, 255, 65, 0.06);
       border-radius: 10px;
-      font-size: 0.78rem;
-      color: var(--sage-dark);
+      font-size: 0.75rem;
+      color: var(--neon-green);
       font-family: var(--mono);
       display: none;
       align-items: center;
@@ -497,7 +475,7 @@
     .normalized-preview .label {
       color: var(--text-muted);
       font-family: var(--font);
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -505,49 +483,53 @@
     .format-hint {
       margin-top: 14px;
       padding: 14px 18px;
-      background: rgba(255, 255, 255, 0.4);
-      backdrop-filter: blur(8px);
+      background: rgba(0, 20, 0, 0.3);
       border-radius: var(--radius-sm);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
       line-height: 1.8;
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(0, 255, 65, 0.04);
+      font-family: var(--mono);
     }
     .format-hint strong {
-      color: var(--navy);
+      color: var(--neon-green);
+      font-weight: 600;
     }
     .format-hint code {
-      color: var(--coral);
-      background: rgba(232, 101, 74, 0.06);
+      color: var(--neon-green);
+      background: rgba(0, 255, 65, 0.04);
       padding: 2px 8px;
       border-radius: 6px;
       font-family: var(--mono);
       font-size: 0.7rem;
     }
 
-    /* === BUTTON === */
+    /* ================================================================
+       BUTTON — hacker style
+       ================================================================ */
     .btn-send {
       width: 100%;
       padding: 18px;
-      background: linear-gradient(135deg, var(--navy), var(--navy-light));
-      border: none;
+      background: rgba(0, 255, 65, 0.04);
+      border: 1px solid rgba(0, 255, 65, 0.15);
       border-radius: var(--radius-sm);
-      color: #fff;
+      color: var(--neon-green);
       font-size: 1rem;
       font-weight: 700;
-      font-family: var(--font);
+      font-family: var(--mono);
       cursor: pointer;
       transition: var(--transition);
       position: relative;
       overflow: hidden;
       letter-spacing: 0.5px;
-      box-shadow: 0 4px 20px rgba(45, 45, 63, 0.15);
+      text-transform: uppercase;
+      box-shadow: 0 0 30px rgba(0, 255, 65, 0.02);
     }
     .btn-send::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, var(--coral), var(--coral-dark));
+      background: linear-gradient(135deg, rgba(0, 255, 65, 0.08), transparent);
       opacity: 0;
       transition: var(--transition);
     }
@@ -555,15 +537,18 @@
       opacity: 1;
     }
     .btn-send:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 40px rgba(232, 101, 74, 0.3);
+      background: rgba(0, 255, 65, 0.08);
+      border-color: rgba(0, 255, 65, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 40px rgba(0, 255, 65, 0.06);
     }
     .btn-send:active {
       transform: translateY(0);
     }
     .btn-send:disabled {
-      background: var(--cream-dark);
+      background: rgba(255, 255, 255, 0.02);
       color: var(--text-muted);
+      border-color: rgba(255, 255, 255, 0.04);
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
@@ -575,8 +560,8 @@
       display: inline-block;
       width: 18px;
       height: 18px;
-      border: 2.5px solid rgba(255, 255, 255, 0.3);
-      border-top-color: #fff;
+      border: 2px solid rgba(0, 255, 65, 0.15);
+      border-top-color: var(--neon-green);
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
       vertical-align: middle;
@@ -592,7 +577,9 @@
       }
     }
 
-    /* === RESULTS === */
+    /* ================================================================
+       RESULTS
+       ================================================================ */
     .results {
       display: none;
     }
@@ -618,9 +605,9 @@
       margin-bottom: 16px;
     }
     .stat-item {
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      background: rgba(0, 20, 0, 0.4);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0, 255, 65, 0.06);
       border-radius: var(--radius-sm);
       padding: 18px 12px;
       text-align: center;
@@ -630,7 +617,7 @@
     }
     .stat-item:hover {
       transform: translateY(-2px);
-      box-shadow: var(--shadow);
+      border-color: rgba(0, 255, 65, 0.1);
     }
     .stat-item::after {
       content: '';
@@ -638,16 +625,19 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: 3px;
+      height: 2px;
     }
     .stat-success::after {
-      background: var(--sage);
+      background: var(--neon-green);
+      box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
     }
     .stat-failed::after {
-      background: var(--coral);
+      background: #ff0040;
+      box-shadow: 0 0 30px rgba(255, 0, 64, 0.2);
     }
     .stat-total::after {
-      background: var(--mustard);
+      background: var(--neon-blue);
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
     }
     .stat-item .value {
       font-size: 1.8rem;
@@ -656,77 +646,78 @@
       line-height: 1;
     }
     .stat-item .label {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       color: var(--text-muted);
       margin-top: 6px;
       text-transform: uppercase;
       letter-spacing: 1.2px;
       font-weight: 600;
+      font-family: var(--mono);
     }
     .stat-success .value {
-      color: var(--sage-dark);
+      color: var(--neon-green);
     }
     .stat-failed .value {
-      color: var(--coral);
+      color: #ff0040;
     }
     .stat-total .value {
-      color: var(--navy);
+      color: var(--neon-blue);
     }
 
     .progress-bar {
-      height: 6px;
-      background: rgba(255, 255, 255, 0.5);
-      border-radius: 3px;
+      height: 4px;
+      background: rgba(0, 20, 0, 0.5);
+      border-radius: 2px;
       margin-bottom: 16px;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(0, 255, 65, 0.03);
     }
     .progress-bar .fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--sage), var(--coral));
-      border-radius: 3px;
+      background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+      border-radius: 2px;
       transition: width 0.5s ease;
       width: 0%;
+      box-shadow: 0 0 30px rgba(0, 255, 65, 0.1);
     }
 
     .log-card {
-      background: rgba(255, 255, 255, 0.4);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
+      background: rgba(0, 20, 0, 0.3);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0, 255, 65, 0.04);
       border-radius: var(--radius-sm);
       padding: 4px;
       overflow: hidden;
     }
     .log-container {
-      background: var(--cream);
-      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
       padding: 12px;
       max-height: 380px;
       overflow-y: auto;
     }
     .log-container::-webkit-scrollbar {
-      width: 5px;
+      width: 4px;
     }
     .log-container::-webkit-scrollbar-track {
       background: transparent;
     }
     .log-container::-webkit-scrollbar-thumb {
-      background: var(--dusty);
-      border-radius: 3px;
+      background: var(--neon-green);
+      border-radius: 2px;
     }
 
     .log-item {
       display: flex;
       align-items: center;
-      padding: 10px 14px;
-      border-radius: 10px;
-      margin-bottom: 4px;
-      font-size: 0.82rem;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 3px;
+      font-size: 0.78rem;
       animation: slideIn 0.3s ease;
       gap: 10px;
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(0, 20, 0, 0.2);
+      border: 1px solid rgba(0, 255, 65, 0.02);
     }
     @keyframes slideIn {
       from {
@@ -739,65 +730,68 @@
       }
     }
     .log-item.sending {
-      border-left: 3px solid var(--mustard);
+      border-left: 2px solid var(--neon-blue);
     }
     .log-item.success {
-      border-left: 3px solid var(--sage);
+      border-left: 2px solid var(--neon-green);
     }
     .log-item.failed {
-      border-left: 3px solid var(--coral);
+      border-left: 2px solid #ff0040;
     }
     .log-item .idx {
       font-family: var(--mono);
       color: var(--text-muted);
-      font-size: 0.68rem;
-      min-width: 24px;
-      opacity: 0.6;
+      font-size: 0.65rem;
+      min-width: 22px;
+      opacity: 0.5;
     }
     .log-item .icon {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
     .log-item .name {
       flex: 1;
       font-weight: 500;
-      color: var(--navy);
-      font-size: 0.82rem;
+      color: var(--text-primary);
+      font-size: 0.78rem;
+      font-family: var(--mono);
     }
     .log-item .badge {
-      font-size: 0.6rem;
-      padding: 3px 10px;
+      font-size: 0.55rem;
+      padding: 2px 10px;
       border-radius: 6px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.8px;
+      font-family: var(--mono);
     }
     .badge-success {
-      background: rgba(139, 168, 136, 0.15);
-      color: var(--sage-dark);
+      background: rgba(0, 255, 65, 0.08);
+      color: var(--neon-green);
     }
     .badge-failed {
-      background: rgba(232, 101, 74, 0.12);
-      color: var(--coral);
+      background: rgba(255, 0, 64, 0.08);
+      color: #ff0040;
     }
     .badge-sending {
-      background: rgba(212, 168, 67, 0.12);
-      color: var(--mustard);
+      background: rgba(0, 212, 255, 0.08);
+      color: var(--neon-blue);
     }
 
     .timer {
       text-align: center;
       font-family: var(--mono);
       color: var(--text-muted);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       margin-top: 14px;
       padding: 8px;
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(0, 20, 0, 0.2);
       border-radius: 30px;
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(0, 255, 65, 0.02);
     }
 
-    /* === BLACKLIST === */
+    /* ================================================================
+       BLACKLIST
+       ================================================================ */
     .blacklist-msg {
       text-align: center;
       padding: 48px 24px;
@@ -821,19 +815,22 @@
       }
     }
     .blacklist-text {
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 600;
-      color: var(--coral);
+      color: #ff0040;
       line-height: 1.6;
+      font-family: var(--mono);
     }
 
-    /* === KEY MODAL === */
+    /* ================================================================
+       KEY MODAL (hacker)
+       ================================================================ */
     .key-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(45, 45, 63, 0.6);
-      backdrop-filter: blur(16px);
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(20px);
       z-index: 999;
       align-items: center;
       justify-content: center;
@@ -851,18 +848,18 @@
       }
     }
     .key-modal {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(30px);
+      background: rgba(0, 20, 0, 0.85);
+      backdrop-filter: blur(40px);
       border-radius: var(--radius);
       padding: 36px 32px;
       max-width: 400px;
       width: 90%;
       text-align: center;
-      box-shadow: 0 30px 80px rgba(45, 45, 63, 0.25);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
       animation: scaleIn 0.35s ease;
       position: relative;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(0, 255, 65, 0.08);
     }
     .key-modal::before {
       content: '';
@@ -870,8 +867,8 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--mustard), var(--coral));
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
     }
     @keyframes scaleIn {
       from {
@@ -889,29 +886,31 @@
     }
     .key-modal h3 {
       font-size: 1.15rem;
-      color: var(--navy);
+      color: var(--text-primary);
       margin-bottom: 4px;
       font-weight: 700;
+      font-family: var(--mono);
     }
     .key-modal p {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
       margin-bottom: 18px;
       line-height: 1.5;
+      font-family: var(--mono);
     }
     .key-input-wrapper {
       display: flex;
       align-items: center;
-      background: var(--cream);
-      border: 2px solid var(--border);
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 255, 65, 0.06);
       border-radius: 12px;
       overflow: hidden;
       margin-bottom: 14px;
       transition: var(--transition);
     }
     .key-input-wrapper:focus-within {
-      border-color: var(--mustard);
-      box-shadow: 0 0 0 4px rgba(212, 168, 67, 0.12);
+      border-color: var(--neon-green);
+      box-shadow: 0 0 0 3px rgba(0, 255, 65, 0.04);
     }
     .key-input-wrapper .icon {
       padding: 14px 12px;
@@ -925,21 +924,22 @@
       border: none;
       font-size: 1rem;
       font-family: var(--mono);
-      color: var(--navy);
+      color: var(--text-primary);
       outline: none;
       letter-spacing: 2px;
     }
     .key-input::placeholder {
       color: var(--text-muted);
-      opacity: 0.4;
+      opacity: 0.3;
       letter-spacing: 0;
     }
     .key-error {
-      color: var(--coral);
+      color: #ff0040;
       font-size: 0.75rem;
       margin-bottom: 10px;
       display: none;
       font-weight: 500;
+      font-family: var(--mono);
     }
     .key-error.show {
       display: block;
@@ -960,19 +960,21 @@
     .key-btn {
       width: 100%;
       padding: 14px;
-      background: linear-gradient(135deg, var(--navy), var(--navy-light));
-      border: none;
+      background: rgba(0, 255, 65, 0.04);
+      border: 1px solid rgba(0, 255, 65, 0.1);
       border-radius: 12px;
-      color: #fff;
+      color: var(--neon-green);
       font-size: 0.9rem;
       font-weight: 700;
-      font-family: var(--font);
+      font-family: var(--mono);
       cursor: pointer;
       transition: var(--transition);
       margin-bottom: 8px;
+      text-transform: uppercase;
     }
     .key-btn:hover {
-      background: linear-gradient(135deg, var(--coral), var(--coral-dark));
+      background: rgba(0, 255, 65, 0.08);
+      border-color: rgba(0, 255, 65, 0.2);
       transform: translateY(-2px);
     }
     .key-cancel {
@@ -981,15 +983,17 @@
       color: var(--text-muted);
       font-size: 0.78rem;
       cursor: pointer;
-      font-family: var(--font);
+      font-family: var(--mono);
       padding: 4px;
       transition: var(--transition);
     }
     .key-cancel:hover {
-      color: var(--coral);
+      color: #ff0040;
     }
 
-    /* === FLOATING WHATSAPP BUTTON === */
+    /* ================================================================
+       FLOATING WHATSAPP BUTTON (hacker style)
+       ================================================================ */
     .floating-wa {
       position: fixed;
       bottom: 28px;
@@ -998,33 +1002,35 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      background: #25D366;
-      color: #fff;
-      padding: 14px 22px;
+      background: rgba(0, 255, 65, 0.04);
+      border: 1px solid rgba(0, 255, 65, 0.08);
+      color: var(--neon-green);
+      padding: 12px 20px;
       border-radius: 60px;
-      box-shadow: 0 8px 40px rgba(37, 211, 102, 0.35);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
       text-decoration: none;
       font-weight: 600;
-      font-size: 0.9rem;
-      font-family: var(--font);
+      font-size: 0.85rem;
+      font-family: var(--mono);
       transition: var(--transition);
-      border: none;
       cursor: pointer;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(12px);
     }
     .floating-wa:hover {
-      transform: translateY(-4px) scale(1.04);
-      box-shadow: 0 16px 50px rgba(37, 211, 102, 0.45);
+      background: rgba(0, 255, 65, 0.08);
+      border-color: rgba(0, 255, 65, 0.2);
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 12px 50px rgba(0, 255, 65, 0.04);
     }
     .floating-wa i {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
     }
     .floating-wa .label {
       display: inline-block;
     }
     .floating-wa .sub-label {
-      font-size: 0.6rem;
-      opacity: 0.8;
+      font-size: 0.55rem;
+      opacity: 0.6;
       font-weight: 400;
       display: block;
       letter-spacing: 0.5px;
@@ -1033,44 +1039,128 @@
       position: absolute;
       right: 0;
       bottom: 120%;
-      background: var(--navy);
-      color: var(--cream);
+      background: rgba(0, 20, 0, 0.9);
+      color: var(--neon-green);
       padding: 8px 16px;
       border-radius: 10px;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 500;
       white-space: nowrap;
       opacity: 0;
       transform: translateY(8px);
       transition: var(--transition);
       pointer-events: none;
+      border: 1px solid rgba(0, 255, 65, 0.04);
     }
     .floating-wa:hover .tooltip {
       opacity: 1;
       transform: translateY(0);
     }
 
-    /* === FOOTER === */
+    /* ================================================================
+       AUDIO PLAYER — hacker style (floating bottom-left)
+       ================================================================ */
+    .audio-player {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(0, 20, 0, 0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(0, 255, 65, 0.06);
+      border-radius: 60px;
+      padding: 10px 20px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+      transition: var(--transition);
+      cursor: default;
+    }
+    .audio-player:hover {
+      border-color: rgba(0, 255, 65, 0.12);
+    }
+    .audio-player .play-btn {
+      background: transparent;
+      border: none;
+      color: var(--neon-green);
+      font-size: 1.6rem;
+      cursor: pointer;
+      transition: var(--transition);
+      padding: 0;
+      line-height: 1;
+    }
+    .audio-player .play-btn:hover {
+      transform: scale(1.15);
+      text-shadow: 0 0 30px rgba(0, 255, 65, 0.15);
+    }
+    .audio-player .track-info {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      max-width: 140px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 0.3px;
+    }
+    .audio-player .track-info .title {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .audio-player .volume-control {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .audio-player .volume-control input[type="range"] {
+      width: 50px;
+      height: 3px;
+      -webkit-appearance: none;
+      background: rgba(0, 255, 65, 0.08);
+      border-radius: 2px;
+      outline: none;
+      transition: var(--transition);
+    }
+    .audio-player .volume-control input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+    }
+    .audio-player .volume-control i {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      opacity: 0.5;
+    }
+
+    /* ================================================================
+       FOOTER
+       ================================================================ */
     .footer {
       text-align: center;
       padding: 28px 0 12px;
       color: var(--text-muted);
-      font-size: 0.72rem;
-      opacity: 0.5;
-      border-top: 1px solid rgba(45, 45, 63, 0.05);
+      font-size: 0.7rem;
+      opacity: 0.4;
+      border-top: 1px solid rgba(0, 255, 65, 0.02);
       margin-top: 12px;
+      font-family: var(--mono);
     }
     .footer a {
-      color: var(--coral);
+      color: var(--neon-green);
       text-decoration: none;
       font-weight: 500;
       transition: var(--transition);
     }
     .footer a:hover {
-      color: var(--coral-dark);
+      opacity: 0.8;
     }
     .footer .heart {
-      color: var(--coral);
+      color: #ff0040;
       display: inline-block;
       animation: heartBeat 1.5s infinite;
     }
@@ -1084,38 +1174,39 @@
       }
     }
 
-    /* === RESPONSIVE === */
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
     @media (max-width: 640px) {
       .container {
-        padding: 16px 14px;
+        padding: 12px 12px 100px;
       }
       .header h1 {
         font-size: 2rem;
       }
       .header {
-        padding: 20px 0 16px;
+        padding: 16px 0 12px;
       }
       .card {
         padding: 20px 16px;
-        border-radius: 20px;
+        border-radius: 16px;
       }
       .stats-bar {
         gap: 8px;
       }
       .stat-item {
         padding: 14px 8px;
-        border-radius: 12px;
+        border-radius: 10px;
       }
       .stat-item .value {
         font-size: 1.4rem;
       }
       .btn-send {
         padding: 16px;
-        border-radius: 12px;
         font-size: 0.9rem;
       }
       .phone-input-wrapper {
-        border-radius: 12px;
+        border-radius: 10px;
       }
       .phone-input {
         padding: 14px 12px;
@@ -1128,22 +1219,46 @@
       .floating-wa {
         bottom: 16px;
         right: 16px;
-        padding: 12px 16px;
-        font-size: 0.8rem;
+        padding: 10px 14px;
+        font-size: 0.75rem;
       }
       .floating-wa .sub-label {
         display: none;
       }
       .floating-wa i {
+        font-size: 1.2rem;
+      }
+      .audio-player {
+        bottom: 16px;
+        left: 16px;
+        padding: 8px 14px;
+        gap: 10px;
+      }
+      .audio-player .track-info {
+        max-width: 80px;
+        font-size: 0.6rem;
+      }
+      .audio-player .play-btn {
         font-size: 1.3rem;
+      }
+      .audio-player .volume-control input[type="range"] {
+        width: 30px;
       }
       .marquee-wrap {
         border-radius: 30px;
         padding: 8px 0;
       }
+      .marquee-wrap::before {
+        left: 10px;
+        font-size: 0.9rem;
+      }
       .marquee span {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         letter-spacing: 0.8px;
+      }
+      .marquee {
+        padding-left: 30px;
+        gap: 30px;
       }
     }
 
@@ -1154,28 +1269,35 @@
       .stat-item:last-child {
         grid-column: span 2;
       }
+      .audio-player .volume-control {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
 
   <!-- ============================================
-  BACKGROUND PARTICLES
+  MATRIX RAIN CANVAS
   ============================================ -->
-  <div class="bg-particles">
-    <span></span><span></span><span></span><span></span>
-    <span></span><span></span><span></span><span></span>
-  </div>
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- ============================================
+  OVERLAYS (multiple)
+  ============================================ -->
+  <div class="overlay overlay-grid"></div>
+  <div class="overlay overlay-scanline"></div>
+  <div class="overlay overlay-vignette"></div>
+  <div class="overlay overlay-glitch"></div>
+  <div class="overlay overlay-noise"></div>
 
   <!-- GLOW ORBS -->
   <div class="glow-orb glow-orb-1"></div>
   <div class="glow-orb glow-orb-2"></div>
+  <div class="glow-orb glow-orb-3"></div>
 
-  <!-- DECORATIVE SHAPES -->
-  <div class="deco-shape deco-1"></div>
-  <div class="deco-shape deco-2"></div>
-  <div class="deco-shape deco-3"></div>
-  <div class="deco-shape deco-4"></div>
+  <!-- TERMINAL CURSOR -->
+  <div class="terminal-cursor">⏣ root@d4:~$ _</div>
 
   <!-- ============================================
   FLOATING WHATSAPP DEVELOPER BUTTON
@@ -1190,11 +1312,36 @@
   </a>
 
   <!-- ============================================
+  AUDIO PLAYER (floating bottom-left)
+  ============================================ -->
+  <div class="audio-player" id="audioPlayer">
+    <button class="play-btn" id="playBtn" title="Play / Pause">
+      <i class="fas fa-play" id="playIcon"></i>
+    </button>
+    <div class="track-info">
+      <span class="title" id="trackTitle">D4 BRAZIL Theme</span>
+      <span style="opacity:0.4;display:block;font-size:0.55rem;">🔊 live</span>
+    </div>
+    <div class="volume-control">
+      <i class="fas fa-volume-up"></i>
+      <input type="range" id="volumeSlider" min="0" max="100" value="30">
+    </div>
+  </div>
+
+  <!-- AUDIO ELEMENT (hidden) — ganti src dengan link lagu lu -->
+  <audio id="bgAudio" loop preload="auto">
+    <!-- Ganti src di bawah dengan link MP3 / OGG yang valid -->
+    <!-- Contoh: https://files.catbox.moe/xxxxxx.mp3 -->
+    <source src="https://files.catbox.moe/fi2k19.mp3" type="audio/mpeg">
+    Your browser does not support audio.
+  </audio>
+
+  <!-- ============================================
   CONTAINER
   ============================================ -->
   <div class="container">
 
-    <!-- ===== MARQUEE / RUNNING TEXT ===== -->
+    <!-- MARQUEE -->
     <div class="marquee-wrap">
       <div class="marquee">
         <span><i class="fas fa-shield-alt"></i> <span class="highlight">OTP Exploit Pro</span> · 22+ Endpoints · Real-time Delivery</span>
@@ -1210,18 +1357,18 @@
       </div>
     </div>
 
-    <!-- ===== HEADER ===== -->
+    <!-- HEADER -->
     <div class="header">
-      <div class="badge"><i class="fas fa-bolt"></i> Multi-Platform</div>
+      <div class="badge"><i class="fas fa-terminal"></i> Multi-Platform</div>
       <h1>D4 BRAZIL <span class="highlight">OTP</span></h1>
-      <div class="subtitle">22 endpoints · real-time delivery · premium security</div>
+      <div class="subtitle">22 endpoints · real-time delivery · hacker security</div>
       <div class="team-tag"><i class="fas fa-crown"></i> By D4 BRAZIL · ANIKILAX TEAM</div>
     </div>
 
-    <!-- ===== MAIN CARD ===== -->
+    <!-- MAIN CARD -->
     <div class="card">
       <div class="input-group">
-        <label><i class="fas fa-phone-alt"></i> Nomor Telepon Target</label>
+        <label><i class="fas fa-phone-alt"></i> Target Phone</label>
         <div class="phone-input-wrapper">
           <span class="phone-prefix" id="prefix">+62</span>
           <input
@@ -1239,8 +1386,8 @@
       </div>
 
       <div class="format-hint">
-        <strong><i class="fas fa-info-circle"></i> Format yang didukung:</strong><br>
-        <code>081234567890</code> &middot; <code>81234567890</code> &middot; <code>+628****7890</code> &middot; <code>6281234567890</code> &middot; <code>0812-3456-7890</code>
+        <strong><i class="fas fa-info-circle"></i> Supported formats:</strong><br>
+        <code>081234567890</code> &middot; <code>81234567890</code> &middot; <code>+628****7890</code> &middot; <code>6281234567890</code>
       </div>
 
       <br>
@@ -1249,7 +1396,7 @@
       </button>
     </div>
 
-    <!-- ===== RESULTS ===== -->
+    <!-- RESULTS -->
     <div class="results" id="results">
       <div class="stats-bar">
         <div class="stat-item stat-success">
@@ -1276,7 +1423,7 @@
       <div class="timer" id="timer"><i class="fas fa-clock"></i> 0.0s</div>
     </div>
 
-    <!-- ===== FOOTER ===== -->
+    <!-- FOOTER -->
     <div class="footer">
       <p>
         D4 BRAZIL OTP Exploit &middot; 2026 &bull;
@@ -1293,15 +1440,15 @@
   <div class="key-overlay" id="keyOverlay">
     <div class="key-modal">
       <div class="lock-icon">🔐</div>
-      <h3>Nomor Dilindungi</h3>
-      <p>Nomor ini memerlukan key untuk melanjutkan pengiriman OTP</p>
+      <h3>Protected Number</h3>
+      <p>Masukkan key untuk melanjutkan</p>
       <div class="key-input-wrapper">
         <span class="icon">🔑</span>
         <input
         type="password"
         class="key-input"
         id="keyInput"
-        placeholder="Masukkan key..."
+        placeholder="Enter key..."
         autocomplete="off"
         >
       </div>
@@ -1312,12 +1459,101 @@
   </div>
 
   <!-- ============================================
-  JAVASCRIPT — FULL LOGIC
+  JAVASCRIPT — MATRIX RAIN + AUDIO + SPAM LOGIC
   ============================================ -->
   <script>
-    // ============================================
-    // DOM REFS
-    // ============================================
+    // ================================================================
+    // MATRIX RAIN EFFECT (Canvas)
+    // ================================================================
+    (function matrixRain() {
+      const canvas = document.getElementById('matrixCanvas');
+      const ctx = canvas.getContext('2d');
+      let width, height, columns, drops = [];
+
+      function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        columns = Math.floor(width / 20);
+        drops = [];
+        for (let i = 0; i < columns; i++) {
+          drops.push(Math.floor(Math.random() * -100));
+        }
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+
+      const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>/\\|{}[]';
+      const fontSize = 20;
+
+      function draw() {
+        ctx.fillStyle = 'rgba(10, 14, 10, 0.04)';
+        ctx.fillRect(0, 0, width, height);
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+          const char = chars[Math.floor(Math.random() * chars.length)];
+          const x = i * fontSize + (fontSize / 2);
+          const y = drops[i] * fontSize;
+          const brightness = 0.4 + Math.random() * 0.6;
+          ctx.fillStyle = `rgba(0, 255, 65, ${brightness * 0.15})`;
+          ctx.fillText(char, x, y);
+
+          if (y > height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    // ================================================================
+    // AUDIO PLAYER CONTROLS
+    // ================================================================
+    const audio = document.getElementById('bgAudio');
+    const playBtn = document.getElementById('playBtn');
+    const playIcon = document.getElementById('playIcon');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const trackTitle = document.getElementById('trackTitle');
+
+    // Set initial volume
+    audio.volume = volumeSlider.value / 100;
+
+    // Auto-play (browser usually blocks, but try)
+    audio.play().catch(() => {});
+
+    playBtn.addEventListener('click', function() {
+      if (audio.paused) {
+        audio.play().catch(() => {});
+        playIcon.className = 'fas fa-pause';
+      } else {
+        audio.pause();
+        playIcon.className = 'fas fa-play';
+      }
+    });
+
+    audio.addEventListener('play', function() {
+      playIcon.className = 'fas fa-pause';
+    });
+    audio.addEventListener('pause', function() {
+      playIcon.className = 'fas fa-play';
+    });
+
+    volumeSlider.addEventListener('input', function() {
+      audio.volume = this.value / 100;
+    });
+
+    // User can change track title via console:
+    // setTrackTitle('Judul Lagu Baru');
+    window.setTrackTitle = function(title) {
+      trackTitle.textContent = title || 'D4 BRAZIL Theme';
+    };
+
+    // ================================================================
+    // SPAM LOGIC (unchanged from previous, but robust)
+    // ================================================================
     const phoneInput = document.getElementById('phoneInput');
     const prefix = document.getElementById('prefix');
     const normalizedPreview = document.getElementById('normalizedPreview');
@@ -1334,9 +1570,6 @@
     const keyInput = document.getElementById('keyInput');
     const keyError = document.getElementById('keyError');
 
-    // ============================================
-    // STATE
-    // ============================================
     let isRunning = false;
     let startTime = null;
     let timerInterval = null;
@@ -1345,9 +1578,6 @@
     let successTotal = 0;
     let failedTotal = 0;
 
-    // ============================================
-    // PHONE NORMALIZATION
-    // ============================================
     function normalizePhone(raw) {
       let p = raw.replace(/[^0-9]/g, '');
       if (p.startsWith('0')) p = '62' + p.slice(1);
@@ -1384,23 +1614,14 @@
       if (e.key === 'Enter') startSpam();
     });
 
-    // ============================================
-    // CORE FUNCTIONS
-    // ============================================
     function startSpam(providedKey) {
       if (isRunning) return;
 
       const raw = phoneInput.value.trim();
-      if (!raw) {
-        phoneInput.focus();
-        return;
-      }
+      if (!raw) { phoneInput.focus(); return; }
 
       const phone = normalizePhone(raw);
-      if (phone.length < 10) {
-        alert('Nomor telepon terlalu pendek!');
-        return;
-      }
+      if (phone.length < 10) { alert('Nomor telepon terlalu pendek!'); return; }
 
       isRunning = true;
       btnSend.disabled = true;
@@ -1431,10 +1652,7 @@
 
           function processStream() {
             reader.read().then(({ done, value }) => {
-              if (done) {
-                finishSpam();
-                return;
-              }
+              if (done) { finishSpam(); return; }
               buffer += decoder.decode(value, { stream: true });
               const lines = buffer.split('\n');
               buffer = lines.pop();
@@ -1594,15 +1812,14 @@
       if (progressBar) progressBar.style.display = '';
     }
 
-    // ============================================
-    // ENTER KEY ON PHONE INPUT
-    // ============================================
+    // Enter on phone input
     phoneInput.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') startSpam();
     });
 
-    console.log('🚀 D4 BRAZIL OTP Exploit Pro loaded.');
+    console.log('🚀 D4 BRAZIL OTP Exploit Pro · Hacker Edition loaded.');
     console.log('💬 Hubungi developer: https://wa.me/6288803536269');
+    console.log('🎵 Ganti lagu: setTrackTitle("Judul") dan ganti src audio di <audio>');
   </script>
 </body>
 </html>
