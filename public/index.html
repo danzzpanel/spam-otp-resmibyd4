@@ -3,1823 +3,502 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>D4 BRAZIL · OTP Exploit Pro · Hacker Edition</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+  <title>OTP Blaster · 39 Endpoints</title>
   <style>
-    /* ================================================================
-       ROOT & RESET
-       ================================================================ */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --neon-green: #00ff41;
-      --neon-blue: #00d4ff;
-      --neon-purple: #b026ff;
-      --dark-bg: #0a0e0a;
-      --glass-bg: rgba(0, 20, 0, 0.65);
-      --glass-border: rgba(0, 255, 65, 0.15);
-      --text-primary: #e0ffe0;
-      --text-muted: #88aa88;
-      --shadow-glow: 0 0 40px rgba(0, 255, 65, 0.08);
-      --radius: 20px;
-      --radius-sm: 12px;
-      --font: 'Space Grotesk', sans-serif;
-      --mono: 'Space Mono', monospace;
-      --transition: 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: var(--font);
-      background: var(--dark-bg);
-      color: var(--text-primary);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0b0e1a;
+      color: #e8edf5;
       min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
     }
-
-    /* ================================================================
-       MATRIX RAIN BACKGROUND (CANVAS)
-       ================================================================ */
-    #matrixCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-      opacity: 0.35;
-    }
-
-    /* ================================================================
-       OVERLAY LAYERS (glitch, scanline, vignette, grid)
-       ================================================================ */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* Grid overlay */
-    .overlay-grid {
-      background-image:
-        linear-gradient(rgba(0, 255, 65, 0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 65, 0.015) 1px, transparent 1px);
-      background-size: 40px 40px;
-    }
-
-    /* Scanline overlay */
-    .overlay-scanline {
-      background: repeating-linear-gradient(0deg,
-          rgba(0, 0, 0, 0) 0px,
-          rgba(0, 0, 0, 0) 2px,
-          rgba(0, 255, 65, 0.015) 2px,
-          rgba(0, 255, 65, 0.015) 4px);
-      background-size: 100% 4px;
-      animation: scanMove 8s linear infinite;
-    }
-    @keyframes scanMove {
-      0% {
-        background-position: 0 0;
-      }
-      100% {
-        background-position: 0 100%;
-      }
-    }
-
-    /* Vignette overlay */
-    .overlay-vignette {
-      background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.7) 100%);
-    }
-
-    /* Glitch overlay (random flicker) */
-    .overlay-glitch {
-      background: transparent;
-      animation: glitchFlicker 6s infinite;
-    }
-    @keyframes glitchFlicker {
-      0%,
-      95%,
-      100% {
-        opacity: 0;
-      }
-      96% {
-        opacity: 0.08;
-        background: rgba(0, 255, 65, 0.1);
-        transform: translateX(2px);
-      }
-      97% {
-        opacity: 0.05;
-        background: rgba(0, 255, 65, 0.08);
-        transform: translateX(-2px);
-      }
-      98% {
-        opacity: 0.1;
-        background: rgba(0, 255, 65, 0.12);
-        transform: translateX(1px);
-      }
-    }
-
-    /* Noise overlay (grain) */
-    .overlay-noise {
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      opacity: 0.5;
-    }
-
-    /* ================================================================
-       GLOW ORBS (hacker style)
-       ================================================================ */
-    .glow-orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(100px);
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.08;
-    }
-    .glow-orb-1 {
-      width: 500px;
-      height: 500px;
-      background: var(--neon-green);
-      top: -150px;
-      right: -100px;
-      animation: pulseOrb 12s infinite alternate;
-    }
-    .glow-orb-2 {
-      width: 400px;
-      height: 400px;
-      background: var(--neon-purple);
-      bottom: -100px;
-      left: -80px;
-      animation: pulseOrb 16s infinite alternate-reverse;
-    }
-    .glow-orb-3 {
-      width: 300px;
-      height: 300px;
-      background: var(--neon-blue);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      animation: pulseOrb 20s infinite alternate;
-      opacity: 0.04;
-    }
-    @keyframes pulseOrb {
-      0% {
-        transform: scale(1) translate(0, 0);
-        opacity: 0.06;
-      }
-      100% {
-        transform: scale(1.3) translate(30px, -30px);
-        opacity: 0.12;
-      }
-    }
-
-    /* ================================================================
-       TERMINAL CURSOR DECORATION
-       ================================================================ */
-    .terminal-cursor {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      color: var(--neon-green);
-      opacity: 0.3;
-      z-index: 2;
-      letter-spacing: 1px;
-      pointer-events: none;
-      animation: blinkCursor 1.2s infinite;
-    }
-    @keyframes blinkCursor {
-      0%,
-      100% {
-        opacity: 0.3;
-      }
-      50% {
-        opacity: 0.05;
-      }
-    }
-
-    /* ================================================================
-       CONTAINER
-       ================================================================ */
     .container {
-      position: relative;
-      z-index: 2;
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 20px 16px 100px;
-    }
-
-    /* ================================================================
-       MARQUEE / RUNNING TEXT (hacker style)
-       ================================================================ */
-    .marquee-wrap {
-      background: rgba(0, 20, 0, 0.6);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--glass-border);
-      border-radius: 60px;
-      padding: 10px 0;
-      margin-bottom: 20px;
-      overflow: hidden;
-      position: relative;
-      box-shadow: 0 0 30px rgba(0, 255, 65, 0.05);
-    }
-    .marquee-wrap::before {
-      content: '>';
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--neon-green);
-      font-family: var(--mono);
-      font-weight: 700;
-      font-size: 1.1rem;
-      opacity: 0.8;
-      z-index: 2;
-      text-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
-    }
-    .marquee {
-      display: flex;
-      white-space: nowrap;
-      animation: marqueeScroll 28s linear infinite;
-      gap: 50px;
-      padding-left: 40px;
-    }
-    .marquee span {
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      font-weight: 500;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      opacity: 0.7;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .marquee span i {
-      color: var(--neon-green);
-      font-size: 0.9rem;
-      opacity: 1;
-    }
-    .marquee span .highlight {
-      color: var(--neon-green);
-      font-weight: 700;
-      text-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
-    }
-    @keyframes marqueeScroll {
-      0% {
-        transform: translateX(0);
-      }
-      100% {
-        transform: translateX(-50%);
-      }
-    }
-
-    /* ================================================================
-       HEADER
-       ================================================================ */
-    .header {
-      text-align: center;
-      padding: 24px 0 20px;
-      position: relative;
-    }
-    .header::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
-      box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
-    }
-    .header .badge {
-      display: inline-block;
-      background: rgba(0, 255, 65, 0.06);
-      border: 1px solid rgba(0, 255, 65, 0.15);
-      color: var(--neon-green);
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 6px 18px;
-      border-radius: 30px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 14px;
-      font-family: var(--mono);
-      box-shadow: 0 0 30px rgba(0, 255, 65, 0.04);
-    }
-    .header h1 {
-      font-family: var(--font);
-      font-size: 2.8rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      letter-spacing: -1.5px;
-      margin-bottom: 4px;
-      line-height: 1.1;
-      text-shadow: 0 0 40px rgba(0, 255, 65, 0.08);
-    }
-    .header h1 .highlight {
-      color: var(--neon-green);
-      text-shadow: 0 0 40px rgba(0, 255, 65, 0.15);
-    }
-    .header .subtitle {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      font-weight: 400;
-      margin-top: 4px;
-      font-family: var(--mono);
-    }
-    .header .team-tag {
-      display: inline-block;
-      margin-top: 10px;
-      background: rgba(0, 255, 65, 0.03);
-      padding: 4px 18px;
-      border-radius: 30px;
-      font-size: 0.65rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      border: 1px solid rgba(0, 255, 65, 0.06);
-      letter-spacing: 0.8px;
-      font-family: var(--mono);
-    }
-
-    /* ================================================================
-       CARD (glassmorphism hacker)
-       ================================================================ */
-    .card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius);
-      padding: 30px 28px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-glow), 0 0 0 1px rgba(0, 255, 65, 0.03);
-      position: relative;
-      overflow: hidden;
-      transition: var(--transition);
-    }
-    .card:hover {
-      box-shadow: 0 0 60px rgba(0, 255, 65, 0.04), 0 0 0 1px rgba(0, 255, 65, 0.06);
-    }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
-      opacity: 0.3;
-      animation: shimmerBorder 6s infinite linear;
-    }
-    @keyframes shimmerBorder {
-      0% {
-        opacity: 0.1;
-      }
-      50% {
-        opacity: 0.5;
-      }
-      100% {
-        opacity: 0.1;
-      }
-    }
-
-    /* ================================================================
-       INPUT
-       ================================================================ */
-    .input-group {
-      margin-bottom: 18px;
-    }
-    .input-group label {
-      display: block;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      font-family: var(--mono);
-    }
-    .phone-input-wrapper {
-      display: flex;
-      align-items: center;
-      background: rgba(0, 20, 0, 0.4);
-      border: 1px solid rgba(0, 255, 65, 0.12);
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      transition: var(--transition);
-    }
-    .phone-input-wrapper:focus-within {
-      border-color: var(--neon-green);
-      box-shadow: 0 0 0 3px rgba(0, 255, 65, 0.06);
-      background: rgba(0, 20, 0, 0.6);
-    }
-    .phone-prefix {
-      padding: 16px 14px;
-      color: var(--neon-green);
-      font-weight: 700;
-      font-size: 1rem;
-      font-family: var(--mono);
-      border-right: 1px solid rgba(0, 255, 65, 0.08);
-      user-select: none;
-      background: rgba(0, 255, 65, 0.02);
-    }
-    .phone-input {
-      flex: 1;
-      padding: 16px;
-      background: transparent;
-      border: none;
-      color: var(--text-primary);
-      font-size: 1rem;
-      font-family: var(--mono);
-      outline: none;
-      letter-spacing: 0.5px;
-    }
-    .phone-input::placeholder {
-      color: var(--text-muted);
-      opacity: 0.4;
-    }
-
-    .normalized-preview {
-      margin-top: 10px;
-      padding: 10px 14px;
-      background: rgba(0, 255, 65, 0.03);
-      border: 1px solid rgba(0, 255, 65, 0.06);
-      border-radius: 10px;
-      font-size: 0.75rem;
-      color: var(--neon-green);
-      font-family: var(--mono);
-      display: none;
-      align-items: center;
-      gap: 8px;
-    }
-    .normalized-preview.show {
-      display: flex;
-    }
-    .normalized-preview .label {
-      color: var(--text-muted);
-      font-family: var(--font);
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .format-hint {
-      margin-top: 14px;
-      padding: 14px 18px;
-      background: rgba(0, 20, 0, 0.3);
-      border-radius: var(--radius-sm);
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      line-height: 1.8;
-      border: 1px solid rgba(0, 255, 65, 0.04);
-      font-family: var(--mono);
-    }
-    .format-hint strong {
-      color: var(--neon-green);
-      font-weight: 600;
-    }
-    .format-hint code {
-      color: var(--neon-green);
-      background: rgba(0, 255, 65, 0.04);
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-family: var(--mono);
-      font-size: 0.7rem;
-    }
-
-    /* ================================================================
-       BUTTON — hacker style
-       ================================================================ */
-    .btn-send {
+      max-width: 720px;
       width: 100%;
-      padding: 18px;
-      background: rgba(0, 255, 65, 0.04);
-      border: 1px solid rgba(0, 255, 65, 0.15);
-      border-radius: var(--radius-sm);
-      color: var(--neon-green);
-      font-size: 1rem;
+      background: #131d2b;
+      border-radius: 20px;
+      padding: 28px 24px;
+      border: 1px solid #1f314a;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.6);
+    }
+    h1 {
+      font-size: 26px;
       font-weight: 700;
-      font-family: var(--mono);
-      cursor: pointer;
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      box-shadow: 0 0 30px rgba(0, 255, 65, 0.02);
-    }
-    .btn-send::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(0, 255, 65, 0.08), transparent);
-      opacity: 0;
-      transition: var(--transition);
-    }
-    .btn-send:hover::before {
-      opacity: 1;
-    }
-    .btn-send:hover {
-      background: rgba(0, 255, 65, 0.08);
-      border-color: rgba(0, 255, 65, 0.3);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 40px rgba(0, 255, 65, 0.06);
-    }
-    .btn-send:active {
-      transform: translateY(0);
-    }
-    .btn-send:disabled {
-      background: rgba(255, 255, 255, 0.02);
-      color: var(--text-muted);
-      border-color: rgba(255, 255, 255, 0.04);
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    .btn-send:disabled::before {
-      display: none;
-    }
-    .btn-send .spinner {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(0, 255, 65, 0.15);
-      border-top-color: var(--neon-green);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      vertical-align: middle;
-      margin-right: 10px;
-    }
-    .btn-send .btn-text {
-      position: relative;
-      z-index: 1;
-    }
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* ================================================================
-       RESULTS
-       ================================================================ */
-    .results {
-      display: none;
-    }
-    .results.show {
-      display: block;
-      animation: fadeUp 0.5s ease;
-    }
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(16px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
       gap: 12px;
+    }
+    h1 small {
+      font-size: 14px;
+      font-weight: 400;
+      color: #8899b4;
+      background: #1a2a3f;
+      padding: 2px 14px;
+      border-radius: 30px;
+    }
+    .sub {
+      color: #8899b4;
+      font-size: 14px;
+      margin-bottom: 24px;
+      border-left: 3px solid #4f8cff;
+      padding-left: 14px;
+    }
+    .form-group {
       margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #b0c4de;
+      margin-bottom: 4px;
+    }
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+    .input-row input {
+      flex: 1;
+      padding: 12px 16px;
+      background: #0a111c;
+      border: 1px solid #1f314a;
+      border-radius: 10px;
+      color: #e8edf5;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s;
+    }
+    .input-row input:focus {
+      border-color: #4f8cff;
+      box-shadow: 0 0 0 3px rgba(79,140,255,0.15);
+    }
+    .btn {
+      padding: 12px 28px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-primary {
+      background: #4f8cff;
+      color: #fff;
+    }
+    .btn-primary:hover { background: #3a75e6; transform: scale(1.02); }
+    .btn-primary:disabled { opacity: 0.4; pointer-events: none; }
+    .btn-danger {
+      background: #e74c3c;
+      color: #fff;
+    }
+    .btn-danger:hover { background: #c0392b; }
+    .btn-danger:disabled { opacity: 0.4; pointer-events: none; }
+    .btn-success {
+      background: #2ecc71;
+      color: #0b0e1a;
+    }
+    .btn-success:hover { background: #27ae60; }
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 20px 0 16px;
     }
     .stat-item {
-      background: rgba(0, 20, 0, 0.4);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(0, 255, 65, 0.06);
-      border-radius: var(--radius-sm);
-      padding: 18px 12px;
+      background: #0a111c;
+      border-radius: 10px;
+      padding: 14px 8px;
       text-align: center;
-      position: relative;
-      overflow: hidden;
-      transition: var(--transition);
+      border: 1px solid #1f314a;
     }
-    .stat-item:hover {
-      transform: translateY(-2px);
-      border-color: rgba(0, 255, 65, 0.1);
-    }
-    .stat-item::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-    }
-    .stat-success::after {
-      background: var(--neon-green);
-      box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
-    }
-    .stat-failed::after {
-      background: #ff0040;
-      box-shadow: 0 0 30px rgba(255, 0, 64, 0.2);
-    }
-    .stat-total::after {
-      background: var(--neon-blue);
-      box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
-    }
-    .stat-item .value {
-      font-size: 1.8rem;
+    .stat-item .num {
+      font-size: 24px;
       font-weight: 700;
-      font-family: var(--mono);
-      line-height: 1;
+      color: #f0f4ff;
     }
     .stat-item .label {
-      font-size: 0.6rem;
-      color: var(--text-muted);
-      margin-top: 6px;
+      font-size: 11px;
+      color: #8899b4;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
-      font-weight: 600;
-      font-family: var(--mono);
+      letter-spacing: 0.5px;
+      margin-top: 2px;
     }
-    .stat-success .value {
-      color: var(--neon-green);
-    }
-    .stat-failed .value {
-      color: #ff0040;
-    }
-    .stat-total .value {
-      color: var(--neon-blue);
-    }
+    .stat-item .num.green { color: #2ecc71; }
+    .stat-item .num.red { color: #e74c3c; }
+    .stat-item .num.blue { color: #4f8cff; }
+    .stat-item .num.gold { color: #f1c40f; }
 
-    .progress-bar {
-      height: 4px;
-      background: rgba(0, 20, 0, 0.5);
-      border-radius: 2px;
+    .progress {
+      height: 6px;
+      background: #1a2a3f;
+      border-radius: 3px;
       margin-bottom: 16px;
       overflow: hidden;
-      border: 1px solid rgba(0, 255, 65, 0.03);
     }
-    .progress-bar .fill {
+    .progress .bar {
       height: 100%;
-      background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
-      border-radius: 2px;
-      transition: width 0.5s ease;
       width: 0%;
-      box-shadow: 0 0 30px rgba(0, 255, 65, 0.1);
+      background: linear-gradient(90deg, #2ecc71, #4f8cff);
+      border-radius: 3px;
+      transition: width 0.4s ease;
     }
 
-    .log-card {
-      background: rgba(0, 20, 0, 0.3);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(0, 255, 65, 0.04);
-      border-radius: var(--radius-sm);
-      padding: 4px;
-      overflow: hidden;
-    }
-    .log-container {
-      background: rgba(0, 0, 0, 0.3);
+    .log-area {
+      background: #0a111c;
+      border: 1px solid #1f314a;
       border-radius: 10px;
       padding: 12px;
-      max-height: 380px;
+      max-height: 340px;
       overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
     }
-    .log-container::-webkit-scrollbar {
-      width: 4px;
+    .log-area .entry {
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
     }
-    .log-container::-webkit-scrollbar-track {
-      background: transparent;
+    .log-area .entry .time {
+      color: #4f5d85;
+      margin-right: 12px;
     }
-    .log-container::-webkit-scrollbar-thumb {
-      background: var(--neon-green);
-      border-radius: 2px;
-    }
-
-    .log-item {
-      display: flex;
-      align-items: center;
-      padding: 8px 12px;
-      border-radius: 8px;
-      margin-bottom: 3px;
-      font-size: 0.78rem;
-      animation: slideIn 0.3s ease;
-      gap: 10px;
-      background: rgba(0, 20, 0, 0.2);
-      border: 1px solid rgba(0, 255, 65, 0.02);
-    }
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateX(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-    .log-item.sending {
-      border-left: 2px solid var(--neon-blue);
-    }
-    .log-item.success {
-      border-left: 2px solid var(--neon-green);
-    }
-    .log-item.failed {
-      border-left: 2px solid #ff0040;
-    }
-    .log-item .idx {
-      font-family: var(--mono);
-      color: var(--text-muted);
-      font-size: 0.65rem;
-      min-width: 22px;
-      opacity: 0.5;
-    }
-    .log-item .icon {
-      font-size: 0.85rem;
-    }
-    .log-item .name {
-      flex: 1;
-      font-weight: 500;
-      color: var(--text-primary);
-      font-size: 0.78rem;
-      font-family: var(--mono);
-    }
-    .log-item .badge {
-      font-size: 0.55rem;
-      padding: 2px 10px;
-      border-radius: 6px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      font-family: var(--mono);
-    }
-    .badge-success {
-      background: rgba(0, 255, 65, 0.08);
-      color: var(--neon-green);
-    }
-    .badge-failed {
-      background: rgba(255, 0, 64, 0.08);
-      color: #ff0040;
-    }
-    .badge-sending {
-      background: rgba(0, 212, 255, 0.08);
-      color: var(--neon-blue);
-    }
+    .log-area .entry .success { color: #2ecc71; }
+    .log-area .entry .failed { color: #e74c3c; }
+    .log-area .entry .info { color: #60a5fa; }
+    .log-area .entry .waiting { color: #f1c40f; }
 
     .timer {
       text-align: center;
-      font-family: var(--mono);
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      margin-top: 14px;
-      padding: 8px;
-      background: rgba(0, 20, 0, 0.2);
-      border-radius: 30px;
-      border: 1px solid rgba(0, 255, 65, 0.02);
-    }
-
-    /* ================================================================
-       BLACKLIST
-       ================================================================ */
-    .blacklist-msg {
-      text-align: center;
-      padding: 48px 24px;
-      animation: fadeUp 0.5s ease;
-    }
-    .blacklist-icon {
-      font-size: 3.5rem;
-      margin-bottom: 16px;
-      animation: wobble 2s ease infinite;
-    }
-    @keyframes wobble {
-      0%,
-      100% {
-        transform: rotate(0deg);
-      }
-      25% {
-        transform: rotate(-6deg);
-      }
-      75% {
-        transform: rotate(6deg);
-      }
-    }
-    .blacklist-text {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #ff0040;
-      line-height: 1.6;
-      font-family: var(--mono);
-    }
-
-    /* ================================================================
-       KEY MODAL (hacker)
-       ================================================================ */
-    .key-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(20px);
-      z-index: 999;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 0.3s ease;
-    }
-    .key-overlay.show {
-      display: flex;
-    }
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-    .key-modal {
-      background: rgba(0, 20, 0, 0.85);
-      backdrop-filter: blur(40px);
-      border-radius: var(--radius);
-      padding: 36px 32px;
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
-      animation: scaleIn 0.35s ease;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(0, 255, 65, 0.08);
-    }
-    .key-modal::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
-    }
-    @keyframes scaleIn {
-      from {
-        opacity: 0;
-        transform: scale(0.92);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-    .key-modal .lock-icon {
-      font-size: 2.8rem;
-      margin-bottom: 12px;
-    }
-    .key-modal h3 {
-      font-size: 1.15rem;
-      color: var(--text-primary);
-      margin-bottom: 4px;
-      font-weight: 700;
-      font-family: var(--mono);
-    }
-    .key-modal p {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 18px;
-      line-height: 1.5;
-      font-family: var(--mono);
-    }
-    .key-input-wrapper {
-      display: flex;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(0, 255, 65, 0.06);
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 14px;
-      transition: var(--transition);
-    }
-    .key-input-wrapper:focus-within {
-      border-color: var(--neon-green);
-      box-shadow: 0 0 0 3px rgba(0, 255, 65, 0.04);
-    }
-    .key-input-wrapper .icon {
-      padding: 14px 12px;
-      font-size: 1rem;
-      opacity: 0.4;
-    }
-    .key-input {
-      flex: 1;
-      padding: 14px 14px 14px 0;
-      background: transparent;
-      border: none;
-      font-size: 1rem;
-      font-family: var(--mono);
-      color: var(--text-primary);
-      outline: none;
-      letter-spacing: 2px;
-    }
-    .key-input::placeholder {
-      color: var(--text-muted);
-      opacity: 0.3;
-      letter-spacing: 0;
-    }
-    .key-error {
-      color: #ff0040;
-      font-size: 0.75rem;
-      margin-bottom: 10px;
-      display: none;
-      font-weight: 500;
-      font-family: var(--mono);
-    }
-    .key-error.show {
-      display: block;
-      animation: shake 0.4s ease;
-    }
-    @keyframes shake {
-      0%,
-      100% {
-        transform: translateX(0);
-      }
-      25% {
-        transform: translateX(-8px);
-      }
-      75% {
-        transform: translateX(8px);
-      }
-    }
-    .key-btn {
-      width: 100%;
-      padding: 14px;
-      background: rgba(0, 255, 65, 0.04);
-      border: 1px solid rgba(0, 255, 65, 0.1);
-      border-radius: 12px;
-      color: var(--neon-green);
-      font-size: 0.9rem;
-      font-weight: 700;
-      font-family: var(--mono);
-      cursor: pointer;
-      transition: var(--transition);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-    }
-    .key-btn:hover {
-      background: rgba(0, 255, 65, 0.08);
-      border-color: rgba(0, 255, 65, 0.2);
-      transform: translateY(-2px);
-    }
-    .key-cancel {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 0.78rem;
-      cursor: pointer;
-      font-family: var(--mono);
-      padding: 4px;
-      transition: var(--transition);
-    }
-    .key-cancel:hover {
-      color: #ff0040;
-    }
-
-    /* ================================================================
-       FLOATING WHATSAPP BUTTON (hacker style)
-       ================================================================ */
-    .floating-wa {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(0, 255, 65, 0.04);
-      border: 1px solid rgba(0, 255, 65, 0.08);
-      color: var(--neon-green);
-      padding: 12px 20px;
-      border-radius: 60px;
-      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.85rem;
-      font-family: var(--mono);
-      transition: var(--transition);
-      cursor: pointer;
-      backdrop-filter: blur(12px);
-    }
-    .floating-wa:hover {
-      background: rgba(0, 255, 65, 0.08);
-      border-color: rgba(0, 255, 65, 0.2);
-      transform: translateY(-4px) scale(1.03);
-      box-shadow: 0 12px 50px rgba(0, 255, 65, 0.04);
-    }
-    .floating-wa i {
-      font-size: 1.4rem;
-    }
-    .floating-wa .label {
-      display: inline-block;
-    }
-    .floating-wa .sub-label {
-      font-size: 0.55rem;
-      opacity: 0.6;
-      font-weight: 400;
-      display: block;
-      letter-spacing: 0.5px;
-    }
-    .floating-wa .tooltip {
-      position: absolute;
-      right: 0;
-      bottom: 120%;
-      background: rgba(0, 20, 0, 0.9);
-      color: var(--neon-green);
-      padding: 8px 16px;
-      border-radius: 10px;
-      font-size: 0.65rem;
-      font-weight: 500;
-      white-space: nowrap;
-      opacity: 0;
-      transform: translateY(8px);
-      transition: var(--transition);
-      pointer-events: none;
-      border: 1px solid rgba(0, 255, 65, 0.04);
-    }
-    .floating-wa:hover .tooltip {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ================================================================
-       AUDIO PLAYER — hacker style (floating bottom-left)
-       ================================================================ */
-    .audio-player {
-      position: fixed;
-      bottom: 28px;
-      left: 28px;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      background: rgba(0, 20, 0, 0.7);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(0, 255, 65, 0.06);
-      border-radius: 60px;
-      padding: 10px 20px;
-      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
-      transition: var(--transition);
-      cursor: default;
-    }
-    .audio-player:hover {
-      border-color: rgba(0, 255, 65, 0.12);
-    }
-    .audio-player .play-btn {
-      background: transparent;
-      border: none;
-      color: var(--neon-green);
-      font-size: 1.6rem;
-      cursor: pointer;
-      transition: var(--transition);
-      padding: 0;
-      line-height: 1;
-    }
-    .audio-player .play-btn:hover {
-      transform: scale(1.15);
-      text-shadow: 0 0 30px rgba(0, 255, 65, 0.15);
-    }
-    .audio-player .track-info {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      max-width: 140px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      letter-spacing: 0.3px;
-    }
-    .audio-player .track-info .title {
-      color: var(--text-primary);
-      font-weight: 500;
-    }
-    .audio-player .volume-control {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .audio-player .volume-control input[type="range"] {
-      width: 50px;
-      height: 3px;
-      -webkit-appearance: none;
-      background: rgba(0, 255, 65, 0.08);
-      border-radius: 2px;
-      outline: none;
-      transition: var(--transition);
-    }
-    .audio-player .volume-control input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--neon-green);
-      cursor: pointer;
-      box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
-    }
-    .audio-player .volume-control i {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      opacity: 0.5;
-    }
-
-    /* ================================================================
-       FOOTER
-       ================================================================ */
-    .footer {
-      text-align: center;
-      padding: 28px 0 12px;
-      color: var(--text-muted);
-      font-size: 0.7rem;
-      opacity: 0.4;
-      border-top: 1px solid rgba(0, 255, 65, 0.02);
+      color: #8899b4;
+      font-size: 14px;
       margin-top: 12px;
-      font-family: var(--mono);
-    }
-    .footer a {
-      color: var(--neon-green);
-      text-decoration: none;
-      font-weight: 500;
-      transition: var(--transition);
-    }
-    .footer a:hover {
-      opacity: 0.8;
-    }
-    .footer .heart {
-      color: #ff0040;
-      display: inline-block;
-      animation: heartBeat 1.5s infinite;
-    }
-    @keyframes heartBeat {
-      0%,
-      100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.2);
-      }
     }
 
-    /* ================================================================
-       RESPONSIVE
-       ================================================================ */
-    @media (max-width: 640px) {
-      .container {
-        padding: 12px 12px 100px;
-      }
-      .header h1 {
-        font-size: 2rem;
-      }
-      .header {
-        padding: 16px 0 12px;
-      }
-      .card {
-        padding: 20px 16px;
-        border-radius: 16px;
-      }
-      .stats-bar {
-        gap: 8px;
-      }
-      .stat-item {
-        padding: 14px 8px;
-        border-radius: 10px;
-      }
-      .stat-item .value {
-        font-size: 1.4rem;
-      }
-      .btn-send {
-        padding: 16px;
-        font-size: 0.9rem;
-      }
-      .phone-input-wrapper {
-        border-radius: 10px;
-      }
-      .phone-input {
-        padding: 14px 12px;
-        font-size: 0.95rem;
-      }
-      .phone-prefix {
-        padding: 14px 10px;
-        font-size: 0.95rem;
-      }
-      .floating-wa {
-        bottom: 16px;
-        right: 16px;
-        padding: 10px 14px;
-        font-size: 0.75rem;
-      }
-      .floating-wa .sub-label {
-        display: none;
-      }
-      .floating-wa i {
-        font-size: 1.2rem;
-      }
-      .audio-player {
-        bottom: 16px;
-        left: 16px;
-        padding: 8px 14px;
-        gap: 10px;
-      }
-      .audio-player .track-info {
-        max-width: 80px;
-        font-size: 0.6rem;
-      }
-      .audio-player .play-btn {
-        font-size: 1.3rem;
-      }
-      .audio-player .volume-control input[type="range"] {
-        width: 30px;
-      }
-      .marquee-wrap {
-        border-radius: 30px;
-        padding: 8px 0;
-      }
-      .marquee-wrap::before {
-        left: 10px;
-        font-size: 0.9rem;
-      }
-      .marquee span {
-        font-size: 0.65rem;
-        letter-spacing: 0.8px;
-      }
-      .marquee {
-        padding-left: 30px;
-        gap: 30px;
-      }
+    .status-msg {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(79,140,255,0.08);
+      border: 1px solid rgba(79,140,255,0.15);
+      color: #b0c4de;
+      font-size: 14px;
+      display: none;
     }
+    .status-msg.show { display: block; }
 
-    @media (max-width: 400px) {
-      .stats-bar {
-        grid-template-columns: 1fr 1fr;
-      }
-      .stat-item:last-child {
-        grid-column: span 2;
-      }
-      .audio-player .volume-control {
-        display: none;
-      }
+    @media (max-width: 600px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .input-row { flex-direction: column; }
     }
   </style>
 </head>
 <body>
+<div class="container">
+  <h1>📱 OTP Blaster <small>39 endpoints</small></h1>
+  <div class="sub">Unlimited loop &bull; 60s delay &bull; real-time</div>
 
-  <!-- ============================================
-  MATRIX RAIN CANVAS
-  ============================================ -->
-  <canvas id="matrixCanvas"></canvas>
-
-  <!-- ============================================
-  OVERLAYS (multiple)
-  ============================================ -->
-  <div class="overlay overlay-grid"></div>
-  <div class="overlay overlay-scanline"></div>
-  <div class="overlay overlay-vignette"></div>
-  <div class="overlay overlay-glitch"></div>
-  <div class="overlay overlay-noise"></div>
-
-  <!-- GLOW ORBS -->
-  <div class="glow-orb glow-orb-1"></div>
-  <div class="glow-orb glow-orb-2"></div>
-  <div class="glow-orb glow-orb-3"></div>
-
-  <!-- TERMINAL CURSOR -->
-  <div class="terminal-cursor">⏣ root@d4:~$ _</div>
-
-  <!-- ============================================
-  FLOATING WHATSAPP DEVELOPER BUTTON
-  ============================================ -->
-  <a href="https://wa.me/6288803536269?text=Halo%20D4%20BRAZIL%20Team%2C%20saya%20mau%20laporkan%20bug%20atau%20bertanya%20mengenai%20OTP%20Exploit" target="_blank" class="floating-wa" title="Hubungi Developer">
-    <i class="fab fa-whatsapp"></i>
-    <span class="label">
-      Developer
-      <span class="sub-label">D4 BRAZIL · Lapor Bug</span>
-    </span>
-    <span class="tooltip">💬 Lapor bug atau tanya</span>
-  </a>
-
-  <!-- ============================================
-  AUDIO PLAYER (floating bottom-left)
-  ============================================ -->
-  <div class="audio-player" id="audioPlayer">
-    <button class="play-btn" id="playBtn" title="Play / Pause">
-      <i class="fas fa-play" id="playIcon"></i>
-    </button>
-    <div class="track-info">
-      <span class="title" id="trackTitle">D4 BRAZIL Theme</span>
-      <span style="opacity:0.4;display:block;font-size:0.55rem;">🔊 live</span>
-    </div>
-    <div class="volume-control">
-      <i class="fas fa-volume-up"></i>
-      <input type="range" id="volumeSlider" min="0" max="100" value="30">
+  <div class="form-group">
+    <label>Nomor Tujuan (contoh: 81234567890)</label>
+    <div class="input-row">
+      <input type="tel" id="phoneInput" placeholder="812-3456-7890" value="81234567890">
+      <button class="btn btn-primary" id="startBtn">🚀 Kirim</button>
+      <button class="btn btn-danger" id="stopBtn" disabled>⏹ Stop</button>
     </div>
   </div>
 
-  <!-- AUDIO ELEMENT (hidden) — ganti src dengan link lagu lu -->
-  <audio id="bgAudio" loop preload="auto">
-    <!-- Ganti src di bawah dengan link MP3 / OGG yang valid -->
-    <!-- Contoh: https://files.catbox.moe/xxxxxx.mp3 -->
-    <source src="https://files.catbox.moe/fi2k19.mp3" type="audio/mpeg">
-    Your browser does not support audio.
-  </audio>
-
-  <!-- ============================================
-  CONTAINER
-  ============================================ -->
-  <div class="container">
-
-    <!-- MARQUEE -->
-    <div class="marquee-wrap">
-      <div class="marquee">
-        <span><i class="fas fa-shield-alt"></i> <span class="highlight">OTP Exploit Pro</span> · 22+ Endpoints · Real-time Delivery</span>
-        <span><i class="fas fa-bolt"></i> <span class="highlight">Premium Performance</span> · Unlimited Spam</span>
-        <span><i class="fas fa-crown"></i> <span class="highlight">D4 BRAZIL</span> · Official Release</span>
-        <span><i class="fas fa-code"></i> <span class="highlight">Full Stack</span> · Node.js + Express</span>
-        <span><i class="fas fa-rocket"></i> <span class="highlight">Always Online</span> · 24/7 Uptime</span>
-        <span><i class="fas fa-shield-alt"></i> <span class="highlight">OTP Exploit Pro</span> · 22+ Endpoints · Real-time Delivery</span>
-        <span><i class="fas fa-bolt"></i> <span class="highlight">Premium Performance</span> · Unlimited Spam</span>
-        <span><i class="fas fa-crown"></i> <span class="highlight">D4 BRAZIL</span> · Official Release</span>
-        <span><i class="fas fa-code"></i> <span class="highlight">Full Stack</span> · Node.js + Express</span>
-        <span><i class="fas fa-rocket"></i> <span class="highlight">Always Online</span> · 24/7 Uptime</span>
-      </div>
-    </div>
-
-    <!-- HEADER -->
-    <div class="header">
-      <div class="badge"><i class="fas fa-terminal"></i> Multi-Platform</div>
-      <h1>D4 BRAZIL <span class="highlight">OTP</span></h1>
-      <div class="subtitle">22 endpoints · real-time delivery · hacker security</div>
-      <div class="team-tag"><i class="fas fa-crown"></i> By D4 BRAZIL · ANIKILAX TEAM</div>
-    </div>
-
-    <!-- MAIN CARD -->
-    <div class="card">
-      <div class="input-group">
-        <label><i class="fas fa-phone-alt"></i> Target Phone</label>
-        <div class="phone-input-wrapper">
-          <span class="phone-prefix" id="prefix">+62</span>
-          <input
-          type="tel"
-          class="phone-input"
-          id="phoneInput"
-          placeholder="812-3456-7890"
-          autocomplete="off"
-          >
-        </div>
-        <div class="normalized-preview" id="normalizedPreview">
-          <span class="label">Format kirim:</span>
-          <span id="normalizedValue"></span>
-        </div>
-      </div>
-
-      <div class="format-hint">
-        <strong><i class="fas fa-info-circle"></i> Supported formats:</strong><br>
-        <code>081234567890</code> &middot; <code>81234567890</code> &middot; <code>+628****7890</code> &middot; <code>6281234567890</code>
-      </div>
-
-      <br>
-      <button class="btn-send" id="btnSend" onclick="startSpam()">
-        <span class="btn-text"><i class="fas fa-paper-plane"></i> Kirim OTP</span>
-      </button>
-    </div>
-
-    <!-- RESULTS -->
-    <div class="results" id="results">
-      <div class="stats-bar">
-        <div class="stat-item stat-success">
-          <div class="value" id="successCount">0</div>
-          <div class="label"><i class="fas fa-check-circle"></i> Berhasil</div>
-        </div>
-        <div class="stat-item stat-failed">
-          <div class="value" id="failedCount">0</div>
-          <div class="label"><i class="fas fa-times-circle"></i> Gagal</div>
-        </div>
-        <div class="stat-item stat-total">
-          <div class="value" id="totalCount">0</div>
-          <div class="label"><i class="fas fa-list-ul"></i> Total</div>
-        </div>
-      </div>
-
-      <div class="progress-bar">
-        <div class="fill" id="progressFill"></div>
-      </div>
-
-      <div class="log-card">
-        <div class="log-container" id="logContainer"></div>
-      </div>
-      <div class="timer" id="timer"><i class="fas fa-clock"></i> 0.0s</div>
-    </div>
-
-    <!-- FOOTER -->
-    <div class="footer">
-      <p>
-        D4 BRAZIL OTP Exploit &middot; 2026 &bull;
-        <a href="https://wa.me/6288803536269" target="_blank"><i class="fab fa-whatsapp"></i> Hubungi Developer</a>
-        &bull; Made with <span class="heart">♥</span> by ANIKILAX Team
-      </p>
-    </div>
-
+  <div class="stats">
+    <div class="stat-item"><div class="num green" id="successCount">0</div><div class="label">Sukses</div></div>
+    <div class="stat-item"><div class="num red" id="failedCount">0</div><div class="label">Gagal</div></div>
+    <div class="stat-item"><div class="num blue" id="totalCount">0</div><div class="label">Total</div></div>
+    <div class="stat-item"><div class="num gold" id="cycleCount">0</div><div class="label">Siklus</div></div>
   </div>
 
-  <!-- ============================================
-  KEY MODAL
-  ============================================ -->
-  <div class="key-overlay" id="keyOverlay">
-    <div class="key-modal">
-      <div class="lock-icon">🔐</div>
-      <h3>Protected Number</h3>
-      <p>Masukkan key untuk melanjutkan</p>
-      <div class="key-input-wrapper">
-        <span class="icon">🔑</span>
-        <input
-        type="password"
-        class="key-input"
-        id="keyInput"
-        placeholder="Enter key..."
-        autocomplete="off"
-        >
-      </div>
-      <div class="key-error" id="keyError">Key salah! Coba lagi.</div>
-      <button class="key-btn" id="keySubmit" onclick="submitKey()"><i class="fas fa-unlock"></i> Lanjutkan</button>
-      <button class="key-cancel" onclick="cancelKey()">Batal</button>
-    </div>
-  </div>
+  <div class="progress"><div class="bar" id="progressBar"></div></div>
 
-  <!-- ============================================
-  JAVASCRIPT — MATRIX RAIN + AUDIO + SPAM LOGIC
-  ============================================ -->
-  <script>
-    // ================================================================
-    // MATRIX RAIN EFFECT (Canvas)
-    // ================================================================
-    (function matrixRain() {
-      const canvas = document.getElementById('matrixCanvas');
-      const ctx = canvas.getContext('2d');
-      let width, height, columns, drops = [];
+  <div class="log-area" id="logArea"></div>
 
-      function resize() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        columns = Math.floor(width / 20);
-        drops = [];
-        for (let i = 0; i < columns; i++) {
-          drops.push(Math.floor(Math.random() * -100));
+  <div class="timer" id="timerDisplay">⏱️ 0.0s</div>
+  <div class="status-msg" id="statusMsg"></div>
+</div>
+
+<script>
+  // ============================================================
+  // DOM REFS
+  // ============================================================
+  const phoneInput = document.getElementById('phoneInput');
+  const startBtn = document.getElementById('startBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const successCount = document.getElementById('successCount');
+  const failedCount = document.getElementById('failedCount');
+  const totalCount = document.getElementById('totalCount');
+  const cycleCount = document.getElementById('cycleCount');
+  const progressBar = document.getElementById('progressBar');
+  const logArea = document.getElementById('logArea');
+  const timerDisplay = document.getElementById('timerDisplay');
+  const statusMsg = document.getElementById('statusMsg');
+
+  // ============================================================
+  // STATE
+  // ============================================================
+  let isRunning = false;
+  let currentSessionId = null;
+  let startTime = null;
+  let timerInterval = null;
+  let totalEndpoints = 0;
+  let processedCount = 0;
+  let successTotal = 0;
+  let failedTotal = 0;
+  let cycleCountNum = 0;
+
+  // ============================================================
+  // HELPER FUNCTIONS
+  // ============================================================
+  function addLog(message, type = 'info') {
+    const time = new Date().toLocaleTimeString('id-ID');
+    const entry = document.createElement('div');
+    entry.className = 'entry';
+    entry.innerHTML = `<span class="time">[${time}]</span><span class="${type}">${message}</span>`;
+    logArea.appendChild(entry);
+    logArea.scrollTop = logArea.scrollHeight;
+  }
+
+  function updateTimer() {
+    if (!startTime) return;
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+    timerDisplay.textContent = `⏱️ ${elapsed}s`;
+  }
+
+  function showStatus(msg, isError = false) {
+    statusMsg.textContent = msg;
+    statusMsg.style.borderColor = isError ? '#e74c3c' : 'rgba(79,140,255,0.15)';
+    statusMsg.style.background = isError ? 'rgba(231,76,60,0.08)' : 'rgba(79,140,255,0.08)';
+    statusMsg.classList.add('show');
+  }
+
+  function hideStatus() {
+    statusMsg.classList.remove('show');
+  }
+
+  function resetUI() {
+    successCount.textContent = '0';
+    failedCount.textContent = '0';
+    totalCount.textContent = '0';
+    cycleCount.textContent = '0';
+    progressBar.style.width = '0%';
+    logArea.innerHTML = '';
+    timerDisplay.textContent = '⏱️ 0.0s';
+    hideStatus();
+  }
+
+  // ============================================================
+  // HANDLE SSE EVENTS
+  // ============================================================
+  function handleEvent(data) {
+    switch (data.type) {
+      case 'protected':
+        // Tampilkan modal key (opsional, kita simpel)
+        showStatus('🔐 Nomor dilindungi. Masukkan key di console atau reload.', true);
+        addLog('🔐 Protected number — butuh key.', 'info');
+        break;
+
+      case 'blacklisted':
+        showStatus('🛡️ Nomor ini diblacklist!', true);
+        addLog('🛡️ Blacklisted: ' + data.message, 'info');
+        stopSpam();
+        break;
+
+      case 'session':
+        currentSessionId = data.sessionId;
+        addLog(`📡 Session ID: ${currentSessionId}`, 'info');
+        break;
+
+      case 'start':
+        addLog(`🚀 Spam dimulai ke ${data.phone}`, 'info');
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        isRunning = true;
+        startTime = Date.now();
+        timerInterval = setInterval(updateTimer, 100);
+        hideStatus();
+        break;
+
+      case 'total':
+        totalEndpoints = data.count;
+        totalCount.textContent = totalEndpoints;
+        addLog(`📦 Total endpoints: ${totalEndpoints}`, 'info');
+        break;
+
+      case 'sending':
+        addLog(`📤 [#${data.idx}] ${data.name} (siklus ${data.cycle})`, 'info');
+        break;
+
+      case 'result':
+        processedCount++;
+        if (data.success) {
+          successTotal++;
+          addLog(`✅ [#${data.idx}] ${data.name} — OK`, 'success');
+        } else {
+          failedTotal++;
+          addLog(`❌ [#${data.idx}] ${data.name} — FAIL`, 'failed');
         }
-      }
+        successCount.textContent = successTotal;
+        failedCount.textContent = failedTotal;
+        totalCount.textContent = successTotal + failedTotal;
+        const progress = (processedCount / totalEndpoints) * 100;
+        progressBar.style.width = Math.min(progress, 100) + '%';
+        break;
 
-      resize();
-      window.addEventListener('resize', resize);
+      case 'cycle_start':
+        cycleCountNum = data.cycle;
+        cycleCount.textContent = cycleCountNum;
+        addLog(`🔄 Siklus #${cycleCountNum} dimulai`, 'info');
+        processedCount = 0;
+        progressBar.style.width = '0%';
+        break;
 
-      const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>/\\|{}[]';
-      const fontSize = 20;
+      case 'cycle_done':
+        addLog(`✅ Siklus #${cycleCountNum} selesai — ${data.totalSuccess} sukses, ${data.totalFailed} gagal (${data.elapsed})`, 'success');
+        // Reset progress bar untuk siklus berikutnya
+        break;
 
-      function draw() {
-        ctx.fillStyle = 'rgba(10, 14, 10, 0.04)';
-        ctx.fillRect(0, 0, width, height);
-        ctx.font = fontSize + 'px monospace';
+      case 'waiting':
+        const delaySec = data.delay / 1000;
+        addLog(`⏳ Menunggu ${delaySec} detik sebelum siklus berikutnya...`, 'waiting');
+        showStatus(`⏳ Menunggu ${delaySec} detik...`);
+        break;
 
-        for (let i = 0; i < drops.length; i++) {
-          const char = chars[Math.floor(Math.random() * chars.length)];
-          const x = i * fontSize + (fontSize / 2);
-          const y = drops[i] * fontSize;
-          const brightness = 0.4 + Math.random() * 0.6;
-          ctx.fillStyle = `rgba(0, 255, 65, ${brightness * 0.15})`;
-          ctx.fillText(char, x, y);
+      case 'stopped':
+        addLog(`⏹️ ${data.message}`, 'info');
+        showStatus('⏹️ Spam dihentikan.');
+        stopSpam();
+        break;
 
-          if (y > height && Math.random() > 0.975) {
-            drops[i] = 0;
+      case 'done':
+        addLog(`🏁 Selesai! Total: ${data.totalSent} terkirim dalam ${data.elapsed}`, 'success');
+        stopSpam();
+        break;
+
+      case 'error':
+        addLog(`❌ Error: ${data.message}`, 'failed');
+        showStatus(`❌ Error: ${data.message}`, true);
+        stopSpam();
+        break;
+
+      default:
+        // Ignore unknown events
+        break;
+    }
+  }
+
+  // ============================================================
+  // STOP SPAM
+  // ============================================================
+  function stopSpam() {
+    isRunning = false;
+    clearInterval(timerInterval);
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    updateTimer();
+
+    // Kirim stop ke server jika session aktif
+    if (currentSessionId) {
+      fetch(`/api/stop/${currentSessionId}`, { method: 'POST' })
+        .then(() => {})
+        .catch(() => {});
+      currentSessionId = null;
+    }
+  }
+
+  // ============================================================
+  // START SPAM
+  // ============================================================
+  function startSpam() {
+    if (isRunning) return;
+
+    const raw = phoneInput.value.trim();
+    if (!raw) {
+      alert('Masukkan nomor telepon!');
+      return;
+    }
+
+    // Reset UI
+    resetUI();
+    successTotal = 0;
+    failedTotal = 0;
+    processedCount = 0;
+    cycleCountNum = 0;
+    totalEndpoints = 0;
+
+    // Siapkan body
+    const body = { phone: raw };
+
+    // Kirim request ke /api/spam
+    fetch('/api/spam', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+    .then(response => {
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      function processStream() {
+        reader.read().then(({ done, value }) => {
+          if (done) {
+            // Jika stream berakhir tanpa error
+            if (isRunning) stopSpam();
+            return;
           }
-          drops[i]++;
-        }
-        requestAnimationFrame(draw);
-      }
-      draw();
-    })();
-
-    // ================================================================
-    // AUDIO PLAYER CONTROLS
-    // ================================================================
-    const audio = document.getElementById('bgAudio');
-    const playBtn = document.getElementById('playBtn');
-    const playIcon = document.getElementById('playIcon');
-    const volumeSlider = document.getElementById('volumeSlider');
-    const trackTitle = document.getElementById('trackTitle');
-
-    // Set initial volume
-    audio.volume = volumeSlider.value / 100;
-
-    // Auto-play (browser usually blocks, but try)
-    audio.play().catch(() => {});
-
-    playBtn.addEventListener('click', function() {
-      if (audio.paused) {
-        audio.play().catch(() => {});
-        playIcon.className = 'fas fa-pause';
-      } else {
-        audio.pause();
-        playIcon.className = 'fas fa-play';
-      }
-    });
-
-    audio.addEventListener('play', function() {
-      playIcon.className = 'fas fa-pause';
-    });
-    audio.addEventListener('pause', function() {
-      playIcon.className = 'fas fa-play';
-    });
-
-    volumeSlider.addEventListener('input', function() {
-      audio.volume = this.value / 100;
-    });
-
-    // User can change track title via console:
-    // setTrackTitle('Judul Lagu Baru');
-    window.setTrackTitle = function(title) {
-      trackTitle.textContent = title || 'D4 BRAZIL Theme';
-    };
-
-    // ================================================================
-    // SPAM LOGIC (unchanged from previous, but robust)
-    // ================================================================
-    const phoneInput = document.getElementById('phoneInput');
-    const prefix = document.getElementById('prefix');
-    const normalizedPreview = document.getElementById('normalizedPreview');
-    const normalizedValue = document.getElementById('normalizedValue');
-    const btnSend = document.getElementById('btnSend');
-    const results = document.getElementById('results');
-    const successCount = document.getElementById('successCount');
-    const failedCount = document.getElementById('failedCount');
-    const totalCount = document.getElementById('totalCount');
-    const progressFill = document.getElementById('progressFill');
-    const logContainer = document.getElementById('logContainer');
-    const timerDisplay = document.getElementById('timer');
-    const keyOverlay = document.getElementById('keyOverlay');
-    const keyInput = document.getElementById('keyInput');
-    const keyError = document.getElementById('keyError');
-
-    let isRunning = false;
-    let startTime = null;
-    let timerInterval = null;
-    let totalEndpoints = 0;
-    let processedCount = 0;
-    let successTotal = 0;
-    let failedTotal = 0;
-
-    function normalizePhone(raw) {
-      let p = raw.replace(/[^0-9]/g, '');
-      if (p.startsWith('0')) p = '62' + p.slice(1);
-      if (p.startsWith('62')) {
-        prefix.textContent = '+62';
-      } else if (p.startsWith('8')) {
-        p = '62' + p;
-        prefix.textContent = '+62';
-      } else {
-        prefix.textContent = '+';
-      }
-      return p;
-    }
-
-    function formatDisplay(num) {
-      if (num.length <= 2) return num;
-      if (num.length <= 6) return num.slice(0, 2) + ' ' + num.slice(2);
-      if (num.length <= 10) return num.slice(0, 2) + ' ' + num.slice(2, 6) + '-' + num.slice(6);
-      return num.slice(0, 2) + ' ' + num.slice(2, 6) + '-' + num.slice(6, 10) + '-' + num.slice(10);
-    }
-
-    phoneInput.addEventListener('input', function() {
-      const raw = this.value;
-      const normalized = normalizePhone(raw);
-      if (normalized.length >= 10) {
-        normalizedPreview.classList.add('show');
-        normalizedValue.textContent = formatDisplay(normalized);
-      } else {
-        normalizedPreview.classList.remove('show');
-      }
-    });
-
-    phoneInput.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') startSpam();
-    });
-
-    function startSpam(providedKey) {
-      if (isRunning) return;
-
-      const raw = phoneInput.value.trim();
-      if (!raw) { phoneInput.focus(); return; }
-
-      const phone = normalizePhone(raw);
-      if (phone.length < 10) { alert('Nomor telepon terlalu pendek!'); return; }
-
-      isRunning = true;
-      btnSend.disabled = true;
-      btnSend.innerHTML = '<span class="spinner"></span><span class="btn-text">Memproses...</span>';
-
-      results.classList.add('show');
-      successCount.textContent = '0';
-      failedCount.textContent = '0';
-      totalCount.textContent = '0';
-      progressFill.style.width = '0%';
-      logContainer.innerHTML = '';
-
-      startTime = Date.now();
-      timerInterval = setInterval(updateTimer, 100);
-
-      const body = { phone: raw };
-      if (providedKey) body.key = providedKey;
-
-      fetch('/api/spam', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        })
-        .then(response => {
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder();
-          let buffer = '';
-
-          function processStream() {
-            reader.read().then(({ done, value }) => {
-              if (done) { finishSpam(); return; }
-              buffer += decoder.decode(value, { stream: true });
-              const lines = buffer.split('\n');
-              buffer = lines.pop();
-              for (const line of lines) {
-                if (line.startsWith('data: ')) {
-                  try {
-                    const data = JSON.parse(line.slice(6));
-                    handleEvent(data);
-                  } catch (e) {}
-                }
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop();
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+                handleEvent(data);
+              } catch (e) {
+                // Ignore malformed JSON
               }
-              processStream();
-            });
+            }
           }
           processStream();
-        })
-        .catch(err => {
-          addLog(0, 'System', 'failed', 'Error: ' + err.message);
-          finishSpam();
         });
-    }
-
-    function handleEvent(data) {
-      switch (data.type) {
-        case 'blacklisted':
-          showBlacklistMessage(data.message);
-          finishSpam();
-          break;
-        case 'protected':
-          showKeyModal();
-          finishSpam();
-          break;
-        case 'start':
-          break;
-        case 'total':
-          totalEndpoints = data.count;
-          processedCount = 0;
-          successTotal = 0;
-          failedTotal = 0;
-          totalCount.textContent = totalEndpoints;
-          break;
-        case 'sending':
-          addLog(data.idx, data.name, 'sending', 'Sending');
-          break;
-        case 'result':
-          processedCount++;
-          if (data.success) {
-            successTotal++;
-            updateLogItem(data.idx, 'success', 'OK');
-          } else {
-            failedTotal++;
-            updateLogItem(data.idx, 'failed', 'Fail');
-          }
-          successCount.textContent = successTotal;
-          failedCount.textContent = failedTotal;
-          totalCount.textContent = successTotal + failedTotal;
-          progressFill.style.width = ((processedCount / totalEndpoints) * 100) + '%';
-          break;
-        case 'done':
-          finishSpam();
-          break;
-        case 'error':
-          addLog(0, 'System', 'failed', data.message);
-          finishSpam();
-          break;
       }
-    }
-
-    function addLog(idx, name, status, badge) {
-      const div = document.createElement('div');
-      div.className = `log-item ${status}`;
-      div.id = `log-${idx}`;
-
-      let icon = '○';
-      if (status === 'success') icon = '●';
-      if (status === 'failed') icon = '×';
-
-      div.innerHTML = `
-            <span class="idx">#${idx}</span>
-            <span class="icon">${icon}</span>
-            <span class="name">${name}</span>
-            <span class="badge badge-${status}">${badge}</span>
-          `;
-      logContainer.appendChild(div);
-      logContainer.scrollTop = logContainer.scrollHeight;
-    }
-
-    function updateLogItem(idx, status, badge) {
-      const el = document.getElementById(`log-${idx}`);
-      if (!el) return;
-      el.className = `log-item ${status}`;
-      let icon = status === 'success' ? '●' : '×';
-      el.querySelector('.icon').textContent = icon;
-      el.querySelector('.badge').className = `badge badge-${status}`;
-      el.querySelector('.badge').textContent = badge;
-    }
-
-    function updateTimer() {
-      if (!startTime) return;
-      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-      timerDisplay.innerHTML = `<i class="fas fa-clock"></i> ${elapsed}s`;
-    }
-
-    function showBlacklistMessage(message) {
-      results.classList.add('show');
-      const statsBar = results.querySelector('.stats-bar');
-      const progressBar = results.querySelector('.progress-bar');
-      if (statsBar) statsBar.style.display = 'none';
-      if (progressBar) progressBar.style.display = 'none';
-      logContainer.innerHTML = `
-            <div class="blacklist-msg">
-              <div class="blacklist-icon">🛡️</div>
-              <div class="blacklist-text">${message}</div>
-            </div>
-          `;
-      timerDisplay.textContent = '';
-    }
-
-    function showKeyModal() {
-      keyOverlay.classList.add('show');
-      keyError.classList.remove('show');
-      keyInput.value = '';
-      setTimeout(() => keyInput.focus(), 100);
-    }
-
-    function cancelKey() {
-      keyOverlay.classList.remove('show');
-      results.classList.remove('show');
-      finishSpam();
-    }
-
-    function submitKey() {
-      const keyVal = keyInput.value.trim();
-      if (!keyVal) {
-        keyError.textContent = 'Key tidak boleh kosong!';
-        keyError.classList.add('show');
-        return;
-      }
-      keyOverlay.classList.remove('show');
-      startSpam(keyVal);
-    }
-
-    keyInput.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') submitKey();
+      processStream();
+    })
+    .catch(err => {
+      addLog(`🔥 Error: ${err.message}`, 'failed');
+      stopSpam();
     });
+  }
 
-    function finishSpam() {
-      isRunning = false;
-      clearInterval(timerInterval);
-      btnSend.disabled = false;
-      btnSend.innerHTML = '<span class="btn-text"><i class="fas fa-paper-plane"></i> Kirim OTP</span>';
-      updateTimer();
+  // ============================================================
+  // EVENT BINDING
+  // ============================================================
+  startBtn.addEventListener('click', startSpam);
+  stopBtn.addEventListener('click', stopSpam);
+  phoneInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') startSpam();
+  });
 
-      const statsBar = results.querySelector('.stats-bar');
-      const progressBar = results.querySelector('.progress-bar');
-      if (statsBar) statsBar.style.display = '';
-      if (progressBar) progressBar.style.display = '';
-    }
-
-    // Enter on phone input
-    phoneInput.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') startSpam();
-    });
-
-    console.log('🚀 D4 BRAZIL OTP Exploit Pro · Hacker Edition loaded.');
-    console.log('💬 Hubungi developer: https://wa.me/6288803536269');
-    console.log('🎵 Ganti lagu: setTrackTitle("Judul") dan ganti src audio di <audio>');
-  </script>
+  // ============================================================
+  // INIT
+  // ============================================================
+  addLog('🚀 OTP Blaster siap. 39 endpoint, loop 60 detik.', 'info');
+  addLog('💡 Masukkan nomor dan klik Kirim.', 'info');
+</script>
 </body>
 </html>
