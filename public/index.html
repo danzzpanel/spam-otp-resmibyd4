@@ -3,10 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>D4 BRAZIL · Live Eye + Anime</title>
+  <title>D4 BRAZIL · 3D Live Eye + Joker + Anime</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #0a0e0a; overflow: hidden; font-family: 'Space Mono', monospace; }
+    body {
+      background: #050805;
+      overflow: hidden;
+      font-family: 'Courier New', monospace;
+      cursor: default;
+    }
     canvas {
       display: block;
       position: fixed;
@@ -15,178 +20,196 @@
       height: 100%;
       z-index: 0;
     }
-    #ui {
-      position: relative;
-      z-index: 2;
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 20px;
-      background: rgba(0,20,0,0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(0,255,65,0.15);
-      border-radius: 20px;
-      color: #e0ffe0;
-      font-family: 'Space Mono', monospace;
-      text-align: center;
-      box-shadow: 0 0 60px rgba(0,255,65,0.04);
-    }
-    #ui h1 {
-      font-size: 1.8rem;
-      color: #00ff41;
-      text-shadow: 0 0 30px rgba(0,255,65,0.15);
-    }
-    #ui .sub { color: #88aa88; font-size: 0.8rem; margin: 8px 0 16px; }
-    .input-group { margin-bottom: 14px; }
-    .input-group label { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #88aa88; }
-    .phone-input-wrapper {
-      display: flex;
-      background: rgba(0,20,0,0.4);
-      border: 1px solid rgba(0,255,65,0.12);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .phone-prefix {
-      padding: 12px 14px;
-      color: #00ff41;
-      font-weight: 700;
-      border-right: 1px solid rgba(0,255,65,0.08);
-    }
-    .phone-input {
-      flex: 1;
-      padding: 12px;
-      background: transparent;
-      border: none;
-      color: #e0ffe0;
-      font-size: 1rem;
-      font-family: 'Space Mono', monospace;
-      outline: none;
-    }
-    .btn-send {
-      width: 100%;
-      padding: 14px;
-      background: rgba(0,255,65,0.04);
-      border: 1px solid rgba(0,255,65,0.15);
-      border-radius: 12px;
-      color: #00ff41;
-      font-weight: 700;
-      font-family: 'Space Mono', monospace;
-      cursor: pointer;
-      transition: 0.3s;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .btn-send:hover {
-      background: rgba(0,255,65,0.08);
-      border-color: rgba(0,255,65,0.3);
-      transform: translateY(-2px);
-    }
-    .btn-send:disabled {
-      opacity: 0.4;
+
+    /* OVERLAY HACKER — tetap di atas animasi */
+    .hacker-overlay {
+      position: fixed;
+      inset: 0;
       pointer-events: none;
+      z-index: 1;
     }
-    #status {
-      margin-top: 12px;
-      font-size: 0.7rem;
-      color: #88aa88;
+    .hacker-overlay .grid {
+      background-image:
+        linear-gradient(rgba(0,255,65,0.008) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,65,0.008) 1px, transparent 1px);
+      background-size: 40px 40px;
+      width: 100%;
+      height: 100%;
     }
-    .dev-link {
-      display: inline-block;
-      margin-top: 16px;
-      padding: 10px 20px;
-      border: 1px solid rgba(0,255,65,0.1);
-      border-radius: 40px;
-      color: #00ff41;
-      text-decoration: none;
-      font-size: 0.8rem;
-      transition: 0.3s;
+    .hacker-overlay .scanline {
+      background: repeating-linear-gradient(0deg,
+          transparent 0px,
+          transparent 2px,
+          rgba(0,255,65,0.012) 2px,
+          rgba(0,255,65,0.012) 4px);
+      background-size: 100% 4px;
+      width: 100%;
+      height: 100%;
+      animation: scanMove 6s linear infinite;
     }
-    .dev-link:hover {
-      background: rgba(0,255,65,0.04);
-      border-color: rgba(0,255,65,0.2);
+    @keyframes scanMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100%; }
     }
-    .audio-control {
-      margin-top: 12px;
+    .hacker-overlay .vignette {
+      background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%);
+      width: 100%;
+      height: 100%;
+    }
+    .hacker-overlay .glitch {
+      background: transparent;
+      animation: glitchFlick 5s infinite;
+      width: 100%;
+      height: 100%;
+    }
+    @keyframes glitchFlick {
+      0%, 94%, 100% { opacity: 0; }
+      95% { opacity: 0.05; background: rgba(0,255,65,0.06); transform: translateX(3px); }
+      96% { opacity: 0.03; background: rgba(0,255,65,0.04); transform: translateX(-3px); }
+      97% { opacity: 0.06; background: rgba(0,255,65,0.08); transform: translateX(2px); }
+    }
+    .hacker-overlay .noise {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      opacity: 0.5;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* UI — minimal, transparan */
+    #ui {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      background: rgba(0,20,0,0.5);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(0,255,65,0.08);
+      border-radius: 60px;
+      padding: 12px 24px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 16px;
+      gap: 18px;
       flex-wrap: wrap;
+      justify-content: center;
+      max-width: 92vw;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
     }
-    .audio-control button {
-      background: transparent;
+    #ui input {
+      background: rgba(0,20,0,0.4);
       border: 1px solid rgba(0,255,65,0.1);
+      border-radius: 30px;
+      padding: 8px 16px;
+      color: #d0ffd0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      width: 160px;
+      outline: none;
+    }
+    #ui input:focus { border-color: rgba(0,255,65,0.25); }
+    #ui button {
+      background: rgba(0,255,65,0.04);
+      border: 1px solid rgba(0,255,65,0.1);
+      border-radius: 30px;
+      padding: 8px 20px;
       color: #00ff41;
-      padding: 8px 18px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    #ui button:hover {
+      background: rgba(0,255,65,0.06);
+      border-color: rgba(0,255,65,0.2);
+    }
+    #ui .status {
+      color: #88aa88;
+      font-size: 0.7rem;
+    }
+    #ui .dev-link {
+      color: #00ff41;
+      text-decoration: none;
+      font-size: 0.7rem;
+      border: 1px solid rgba(0,255,65,0.06);
+      padding: 6px 14px;
+      border-radius: 30px;
+    }
+    .audio-ctrl {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .audio-ctrl button {
+      background: transparent;
+      border: 1px solid rgba(0,255,65,0.08);
+      color: #00ff41;
+      padding: 4px 12px;
       border-radius: 30px;
       cursor: pointer;
-      font-family: 'Space Mono', monospace;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
     }
-    .audio-control button:hover {
-      background: rgba(0,255,65,0.04);
-    }
-    .audio-control input[type="range"] {
-      width: 80px;
+    .audio-ctrl input[type="range"] {
+      width: 60px;
       height: 3px;
       -webkit-appearance: none;
-      background: rgba(0,255,65,0.1);
+      background: rgba(0,255,65,0.08);
       border-radius: 2px;
       outline: none;
     }
-    .audio-control input[type="range"]::-webkit-slider-thumb {
+    .audio-ctrl input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       background: #00ff41;
       cursor: pointer;
     }
-    @media (max-width: 600px) {
-      #ui { margin: 10px; padding: 16px; }
-      #ui h1 { font-size: 1.4rem; }
+    @media (max-width: 700px) {
+      #ui { padding: 10px 16px; gap: 10px; border-radius: 30px; bottom: 16px; }
+      #ui input { width: 120px; font-size: 0.7rem; }
+      #ui button { font-size: 0.7rem; padding: 6px 14px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- CANVAS UTAMA -->
-  <canvas id="canvas"></canvas>
-
-  <!-- UI OVERLAY -->
-  <div id="ui">
-    <h1>⬡ D4 BRAZIL</h1>
-    <div class="sub">live eye · anime motion · otp spam</div>
-    <div class="input-group">
-      <label>nomor target</label>
-      <div class="phone-input-wrapper">
-        <span class="phone-prefix">+62</span>
-        <input class="phone-input" id="phoneInput" placeholder="812-3456-7890" value="81234567890">
-      </div>
-    </div>
-    <button class="btn-send" id="btnSend">▶ kirim otp</button>
-    <div id="status">siap</div>
-
-    <div class="audio-control">
-      <button id="playBtn">▶ play</button>
-      <span style="color:#88aa88;font-size:0.7rem;">volume</span>
-      <input type="range" id="volumeSlider" min="0" max="100" value="30">
-    </div>
-
-    <a href="https://wa.me/6288803536269" target="_blank" class="dev-link">
-      <i class="fab fa-whatsapp"></i> developer
-    </a>
+  <!-- HACKER OVERLAY (di atas canvas, di bawah UI) -->
+  <div class="hacker-overlay">
+    <div class="grid"></div>
+    <div class="scanline"></div>
+    <div class="vignette"></div>
+    <div class="glitch"></div>
+    <div class="noise"></div>
   </div>
 
-  <!-- AUDIO (ganti src dengan lagu lu) -->
+  <!-- CANVAS 3D -->
+  <canvas id="canvas3d"></canvas>
+
+  <!-- UI -->
+  <div id="ui">
+    <span style="color:#00ff41;font-weight:700;font-size:0.9rem;">⬡ D4</span>
+    <input id="phoneInput" placeholder="812-3456-7890" value="81234567890">
+    <button id="btnSend">▶ spam</button>
+    <span class="status" id="status">siap</span>
+    <div class="audio-ctrl">
+      <button id="playBtn">▶</button>
+      <input type="range" id="volumeSlider" min="0" max="100" value="25">
+    </div>
+    <a href="https://wa.me/6288803536269" target="_blank" class="dev-link">📱 dev</a>
+  </div>
+
   <audio id="bgAudio" loop preload="auto">
     <source src="https://files.catbox.moe/fi2k19.mp3" type="audio/mpeg">
   </audio>
 
   <script>
     // ================================================================
-    // CANVAS ANIMASI — LIVE EYE + ANIME + MULUT JOKER
+    //  3D ANIMATION ENGINE — REALISTIC EYE + JOKER MOUTH + ANIME
+    //  Semua berbentuk 3D shading, depth, perspective
     // ================================================================
-    const canvas = document.getElementById('canvas');
+
+    const canvas = document.getElementById('canvas3d');
     const ctx = canvas.getContext('2d');
     let W, H;
 
@@ -197,343 +220,580 @@
     resize();
     window.addEventListener('resize', resize);
 
-    // --- STATE ---
-    let blink = 0; // 0 = terbuka, 1 = tertutup (lerp)
-    let blinkTimer = 0;
-    let pupilOffsetX = 0;
-    let pupilDirection = 1;
+    // ---- TIME & STATE ----
     let time = 0;
+    let blinkPhase = 0;       // 0 = terbuka, 1 = tertutup (smooth)
+    let blinkTimer = 0;
+    let pupilLX = 0, pupilRX = 0;
+    let pupilDir = 1;
 
-    // --- PARAMETER MATA ---
-    const eyeWidth = () => Math.min(W * 0.35, 320);
-    const eyeHeight = () => eyeWidth() * 0.55;
-    const eyeSpacing = () => eyeWidth() * 1.2;
+    // Anime state
+    let animeWave = 0;
+    let kissBlow = 0;
+    let handWave = 0;
 
-    // --- ANIME STATE ---
-    let animeX = 0; // posisi horizontal (gerak)
-    let animeY = 0;
-    let handAngle = 0; // untuk tangan melambai
-    let kissPhase = 0; // untuk gerakan kiss
+    // ---- 3D SHADING HELPER ----
+    function shade(color, light) {
+      // light: -1..1
+      const r = parseInt(color.slice(1,2),16)*17 || 0;
+      const g = parseInt(color.slice(2,3),16)*17 || 0;
+      const b = parseInt(color.slice(3,4),16)*17 || 0;
+      const f = 0.5 + light * 0.5;
+      return `rgb(${Math.min(255,Math.floor(r*f))},${Math.min(255,Math.floor(g*f))},${Math.min(255,Math.floor(b*f))})`;
+    }
 
-    // --- LOAD GAMBAR ANIME (ganti URL dengan gambar lu) ---
-    const animeImg = new Image();
-    // Ganti URL ini dengan gambar anime sexy yang lu punya (catbox atau lain)
-    animeImg.src = 'https://files.catbox.moe/sample_anime.png'; // ganti dengan link asli
-    animeImg.onerror = () => {
-      // fallback: gambar buatan sendiri
-      console.warn('Gambar anime gagal dimuat, pakai default shape');
-    };
+    // ---- DRAW 3D EYE WITH EYELASHES ----
+    function drawEye3D(cx, cy, radius, isLeft, blink) {
+      const scale = 1 - blink * 0.35;
+      const rx = radius * 1.0;
+      const ry = radius * 0.75 * scale;
 
-    // ================================================================
-    // DRAW FUNCTIONS
-    // ================================================================
-
-    function drawEye(cx, cy, w, h, blinkFactor) {
-      // Sklera (putih dengan efek neon)
-      const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, w * 0.6);
-      grad.addColorStop(0, 'rgba(0,255,65,0.02)');
-      grad.addColorStop(0.7, 'rgba(0,255,65,0.04)');
-      grad.addColorStop(1, 'rgba(0,0,0,0.3)');
-      ctx.fillStyle = grad;
-      ctx.shadowColor = 'rgba(0,255,65,0.05)';
-      ctx.shadowBlur = 30;
+      // 1. Socket (bayangan)
+      ctx.shadowBlur = 60;
+      ctx.shadowColor = 'rgba(0,0,0,0.3)';
+      ctx.fillStyle = 'rgba(0,10,0,0.2)';
       ctx.beginPath();
-      ctx.ellipse(cx, cy, w * 0.45, h * 0.45 * (1 - blinkFactor * 0.5), 0, 0, Math.PI * 2);
+      ctx.ellipse(cx, cy + 8, rx * 1.1, ry * 1.1, 0, 0, Math.PI*2);
       ctx.fill();
 
-      // Outline
-      ctx.shadowBlur = 50;
-      ctx.shadowColor = 'rgba(0,255,65,0.06)';
-      ctx.strokeStyle = 'rgba(0,255,65,0.08)';
-      ctx.lineWidth = 1.5;
+      // 2. Sklera (putih mata) — 3D shading
+      const grad = ctx.createRadialGradient(
+        cx - rx*0.2, cy - ry*0.3, rx*0.1,
+        cx, cy, rx*0.9
+      );
+      grad.addColorStop(0, 'rgba(0,255,65,0.015)');
+      grad.addColorStop(0.3, 'rgba(0,255,65,0.025)');
+      grad.addColorStop(0.7, 'rgba(0,30,0,0.04)');
+      grad.addColorStop(1, 'rgba(0,0,0,0.12)');
+      ctx.shadowBlur = 40;
+      ctx.shadowColor = 'rgba(0,255,65,0.04)';
+      ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.ellipse(cx, cy, w * 0.45, h * 0.45 * (1 - blinkFactor * 0.5), 0, 0, Math.PI * 2);
+      ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2);
+      ctx.fill();
+
+      // 3. Outline neon
+      ctx.shadowBlur = 60;
+      ctx.shadowColor = 'rgba(0,255,65,0.06)';
+      ctx.strokeStyle = 'rgba(0,255,65,0.06)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2);
       ctx.stroke();
 
-      // Pupil (hanya jika tidak kedip penuh)
-      if (blinkFactor < 0.8) {
-        const pupilScale = 1 - blinkFactor * 0.6;
-        const px = cx + pupilOffsetX * w * 0.3;
-        const py = cy;
-        const irisR = w * 0.12 * pupilScale;
-        const pupilR = w * 0.06 * pupilScale;
+      // 4. Iris & pupil (3D depth)
+      if (blink < 0.85) {
+        const irisScale = 1 - blink * 0.4;
+        const pupilOff = isLeft ? pupilLX : pupilRX;
+        const px = cx + pupilOff * rx * 0.35;
+        const py = cy + Math.sin(time*0.002) * 2;
+        const irisR = rx * 0.28 * irisScale;
+        const pupilR = rx * 0.14 * irisScale;
 
-        // Iris
-        ctx.shadowBlur = 40;
-        ctx.shadowColor = 'rgba(0,255,65,0.1)';
-        ctx.fillStyle = 'rgba(0,255,65,0.04)';
+        // Iris gradient 3D
+        const irisGrad = ctx.createRadialGradient(
+          px - irisR*0.2, py - irisR*0.2, irisR*0.1,
+          px, py, irisR
+        );
+        irisGrad.addColorStop(0, 'rgba(0,255,65,0.06)');
+        irisGrad.addColorStop(0.5, 'rgba(0,20,0,0.04)');
+        irisGrad.addColorStop(1, 'rgba(0,0,0,0.08)');
+        ctx.shadowBlur = 50;
+        ctx.shadowColor = 'rgba(0,255,65,0.08)';
+        ctx.fillStyle = irisGrad;
         ctx.beginPath();
-        ctx.arc(px, py, irisR, 0, Math.PI * 2);
+        ctx.arc(px, py, irisR, 0, Math.PI*2);
         ctx.fill();
 
         // Pupil
-        ctx.shadowBlur = 50;
-        ctx.shadowColor = 'rgba(0,255,65,0.15)';
-        ctx.fillStyle = 'rgba(0,20,0,0.8)';
+        ctx.shadowBlur = 60;
+        ctx.shadowColor = 'rgba(0,255,65,0.12)';
+        ctx.fillStyle = 'rgba(0,10,0,0.85)';
         ctx.beginPath();
-        ctx.arc(px, py, pupilR, 0, Math.PI * 2);
+        ctx.arc(px, py, pupilR, 0, Math.PI*2);
         ctx.fill();
 
-        // Pantulan
+        // Highlight (pantulan cahaya 3D)
         ctx.shadowBlur = 0;
-        ctx.fillStyle = 'rgba(0,255,65,0.12)';
+        ctx.fillStyle = 'rgba(0,255,65,0.08)';
         ctx.beginPath();
-        ctx.arc(px - pupilR * 0.3, py - pupilR * 0.3, pupilR * 0.25, 0, Math.PI * 2);
+        ctx.arc(px - pupilR*0.3, py - pupilR*0.35, pupilR*0.2, 0, Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,0.02)';
+        ctx.beginPath();
+        ctx.arc(px - pupilR*0.2, py - pupilR*0.4, pupilR*0.08, 0, Math.PI*2);
         ctx.fill();
       }
-    }
 
-    function drawJokerMouth(cx, cy, w) {
-      const smileW = w * 0.5;
-      const smileH = w * 0.2;
-      ctx.shadowBlur = 30;
-      ctx.shadowColor = 'rgba(255,0,0,0.08)';
+      // 5. BULU MATA (3D — melengkung, berkedip)
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = 'rgba(0,255,65,0.02)';
+      const lashCount = 14;
+      const lashLen = rx * 0.18;
+      const blinkLash = blink * 0.5;
+      for (let i = 0; i < lashCount; i++) {
+        const angle = -Math.PI/2 + (i / (lashCount-1)) * Math.PI * 0.9;
+        const x1 = cx + Math.cos(angle) * rx * 0.85;
+        const y1 = cy + Math.sin(angle) * ry * 0.85 * (1 - blink*0.2);
+        const lashAngle = angle - 0.3 + Math.sin(i*0.8) * 0.15;
+        const len = lashLen * (0.7 + 0.3 * Math.sin(i*0.5 + 1));
+        const x2 = x1 + Math.cos(lashAngle) * len * (1 - blinkLash*0.6);
+        const y2 = y1 + Math.sin(lashAngle) * len * (1 - blinkLash*0.6) - blink * 3;
+        ctx.strokeStyle = `rgba(0,255,65,${0.04 + 0.02 * (1 - blink)})`;
+        ctx.lineWidth = 1 + 0.5 * (1 - blink);
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.quadraticCurveTo(
+          x1 + Math.cos(lashAngle+0.2)*len*0.3,
+          y1 + Math.sin(lashAngle+0.2)*len*0.3 - 3,
+          x2, y2
+        );
+        ctx.stroke();
+        // Bulu mata bawah (lebih pendek)
+        const angle2 = Math.PI/2 + (i / (lashCount-1)) * Math.PI * 0.9;
+        const x1b = cx + Math.cos(angle2) * rx * 0.8;
+        const y1b = cy + Math.sin(angle2) * ry * 0.8 * (1 - blink*0.15);
+        const lashAngle2 = angle2 + 0.3 - Math.sin(i*0.7) * 0.1;
+        const len2 = lashLen * 0.5 * (0.6 + 0.4 * Math.sin(i*0.6 + 2));
+        const x2b = x1b + Math.cos(lashAngle2) * len2 * (1 - blinkLash*0.4);
+        const y2b = y1b + Math.sin(lashAngle2) * len2 * (1 - blinkLash*0.4) + blink * 2;
+        ctx.strokeStyle = `rgba(0,255,65,0.02)`;
+        ctx.lineWidth = 0.6;
+        ctx.beginPath();
+        ctx.moveTo(x1b, y1b);
+        ctx.quadraticCurveTo(
+          x1b + Math.cos(lashAngle2-0.2)*len2*0.3,
+          y1b + Math.sin(lashAngle2-0.2)*len2*0.3 + 3,
+          x2b, y2b
+        );
+        ctx.stroke();
+      }
 
-      // Senyum lebar
-      ctx.beginPath();
-      ctx.ellipse(cx, cy + smileH * 0.2, smileW, smileH, 0, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(20,0,0,0.7)';
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(255,0,40,0.15)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // Gigi (garis-garis)
+      // 6. Garis kelopak atas (3D depth)
       ctx.shadowBlur = 0;
-      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      ctx.strokeStyle = 'rgba(0,255,65,0.02)';
       ctx.lineWidth = 1;
-      for (let i = -6; i <= 6; i++) {
-        const x = cx + i * (smileW / 7);
-        const y = cy + smileH * 0.1;
+      ctx.beginPath();
+      for (let i = 0; i < 20; i++) {
+        const t = i / 19;
+        const angle = -Math.PI*0.45 + t * Math.PI*0.9;
+        const x = cx + Math.cos(angle) * rx * 0.95;
+        const y = cy + Math.sin(angle) * ry * 0.95 * (1 - blink*0.15);
+        if (i===0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+
+    // ---- DRAW 3D JOKER MOUTH ----
+    function drawJokerMouth3D(cx, cy, w) {
+      const h = w * 0.28;
+      const timeMouth = time * 0.025;
+
+      // 1. Bayangan mulut
+      ctx.shadowBlur = 80;
+      ctx.shadowColor = 'rgba(0,0,0,0.4)';
+      ctx.fillStyle = 'rgba(10,0,0,0.2)';
+      ctx.beginPath();
+      ctx.ellipse(cx + 2, cy + 6, w*0.45, h*0.5, 0, 0, Math.PI*2);
+      ctx.fill();
+
+      // 2. Bibir & rongga mulut (3D depth)
+      const mouthOpen = 0.6 + 0.2 * Math.sin(timeMouth);
+      const smileCurve = 0.15 * Math.sin(timeMouth * 0.7);
+
+      // Rongga (hitam dalam)
+      ctx.shadowBlur = 40;
+      ctx.shadowColor = 'rgba(255,0,40,0.05)';
+      ctx.fillStyle = 'rgba(5,0,0,0.75)';
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + h*0.2, w*0.4, h*0.5 * mouthOpen, 0, 0, Math.PI*2);
+      ctx.fill();
+
+      // Bibir atas (3D)
+      ctx.shadowBlur = 30;
+      ctx.shadowColor = 'rgba(255,50,80,0.06)';
+      const lipGrad = ctx.createLinearGradient(cx - w*0.3, cy - h*0.2, cx + w*0.3, cy + h*0.2);
+      lipGrad.addColorStop(0, 'rgba(180,20,40,0.03)');
+      lipGrad.addColorStop(0.5, 'rgba(220,40,60,0.06)');
+      lipGrad.addColorStop(1, 'rgba(140,10,30,0.03)');
+      ctx.fillStyle = lipGrad;
+      ctx.beginPath();
+      ctx.moveTo(cx - w*0.45, cy - h*0.05);
+      ctx.quadraticCurveTo(cx - w*0.2, cy - h*0.3 + smileCurve*10, cx, cy - h*0.1);
+      ctx.quadraticCurveTo(cx + w*0.2, cy - h*0.3 + smileCurve*10, cx + w*0.45, cy - h*0.05);
+      ctx.quadraticCurveTo(cx + w*0.3, cy + h*0.1, cx, cy + h*0.1);
+      ctx.quadraticCurveTo(cx - w*0.3, cy + h*0.1, cx - w*0.45, cy - h*0.05);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,60,80,0.05)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Bibir bawah
+      ctx.fillStyle = 'rgba(160,20,30,0.04)';
+      ctx.beginPath();
+      ctx.moveTo(cx - w*0.4, cy + h*0.2);
+      ctx.quadraticCurveTo(cx - w*0.15, cy + h*0.4 + smileCurve*8, cx, cy + h*0.3);
+      ctx.quadraticCurveTo(cx + w*0.15, cy + h*0.4 + smileCurve*8, cx + w*0.4, cy + h*0.2);
+      ctx.quadraticCurveTo(cx + w*0.25, cy + h*0.0, cx, cy + h*0.1);
+      ctx.quadraticCurveTo(cx - w*0.25, cy + h*0.0, cx - w*0.4, cy + h*0.2);
+      ctx.fill();
+
+      // Gigi (3D — shading)
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = 'rgba(0,0,0,0.1)';
+      for (let i = -5; i <= 5; i++) {
+        const x = cx + i * (w * 0.065);
+        const yTop = cy - h*0.02 + Math.sin(i*0.6 + time*0.01)*2;
+        const yBot = cy + h*0.08 + Math.sin(i*0.4 + time*0.015)*2;
+        const ww = w * 0.035;
+        ctx.fillStyle = `rgba(200,220,200,${0.015 + 0.01 * (1 - Math.abs(i)/6)})`;
+        ctx.fillRect(x - ww/2, yTop, ww, yBot - yTop);
+        ctx.strokeStyle = 'rgba(200,200,200,0.01)';
+        ctx.lineWidth = 0.3;
+        ctx.strokeRect(x - ww/2, yTop, ww, yBot - yTop);
+      }
+
+      // Sudut senyum Joker (melengkung ke atas)
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = 'rgba(255,0,40,0.03)';
+      ctx.strokeStyle = 'rgba(255,30,70,0.04)';
+      ctx.lineWidth = 2;
+      for (let side = -1; side <= 1; side+=2) {
+        const sx = cx + side * w * 0.45;
+        const sy = cy + h*0.05 + side * 0.1 * h;
         ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x, y + smileH * 0.5);
+        ctx.moveTo(sx - side*5, sy);
+        ctx.quadraticCurveTo(
+          sx - side*20, sy - h*0.3,
+          sx - side*30, sy - h*0.1
+        );
         ctx.stroke();
       }
 
-      // Sudut senyum (seperti joker)
-      ctx.strokeStyle = 'rgba(255,0,40,0.1)';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(cx - smileW * 0.8, cy + smileH * 0.1);
-      ctx.quadraticCurveTo(cx - smileW * 0.4, cy - smileH * 0.3, cx, cy + smileH * 0.1);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx + smileW * 0.8, cy + smileH * 0.1);
-      ctx.quadraticCurveTo(cx + smileW * 0.4, cy - smileH * 0.3, cx, cy + smileH * 0.1);
-      ctx.stroke();
-
-      // Text "HAHA" kecil
-      ctx.fillStyle = 'rgba(255,0,40,0.03)';
-      ctx.font = '14px monospace';
+      // "HA HA HA" teks halus
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = 'rgba(255,50,80,0.015)';
+      ctx.font = '12px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText('HAHA', cx, cy + smileH * 1.8);
+      ctx.fillText('HA HA HA', cx, cy + h * 1.6 + Math.sin(time*0.02)*3);
     }
 
-    function drawAnime() {
-      const baseX = W * 0.5 + animeX * 20;
-      const baseY = H * 0.55 + animeY * 15;
+    // ---- DRAW 3D ANIME BODY (sexy, proporsi 3D) ----
+    function drawAnime3D() {
+      const baseX = W * 0.5;
+      const baseY = H * 0.62;
+      const scale = Math.min(W, H) * 0.018;
 
-      // Jika gambar berhasil dimuat, tampilkan gambar
-      if (animeImg.complete && animeImg.naturalWidth > 0) {
-        const imgW = Math.min(W * 0.35, 280);
-        const imgH = imgW * (animeImg.height / animeImg.width);
-        const dx = baseX - imgW / 2;
-        const dy = baseY - imgH / 2;
+      // Gerakan tubuh (seperti bernapas & goyang)
+      const breath = Math.sin(time * 0.025) * 0.015;
+      const sway = Math.sin(time * 0.015) * 0.02;
+      const headBob = Math.sin(time * 0.02) * 0.01;
 
-        // Simulasi goyangan tubuh
-        const sway = Math.sin(time * 0.02) * 6;
-        const swayY = Math.sin(time * 0.015) * 3;
-        ctx.save();
-        ctx.translate(baseX + sway * 0.5, baseY + swayY * 0.3);
-        ctx.rotate(Math.sin(time * 0.01) * 0.03);
-        ctx.shadowColor = 'rgba(0,255,65,0.04)';
-        ctx.shadowBlur = 40;
-        ctx.drawImage(animeImg, -imgW / 2, -imgH / 2, imgW, imgH);
-        ctx.restore();
+      // ---- KEPALA (3D) ----
+      const headR = 38 * scale;
+      const headX = baseX + sway * 30;
+      const headY = baseY - 10 * scale + headBob * 30;
 
-        // Animasi tangan (dadah) dan kiss
-        // Kita gambar overlay tangan tambahan di atas gambar
-        const handX = baseX + imgW * 0.4;
-        const handY = baseY - imgH * 0.2;
-        const handLen = 60;
-        const handAngleNow = handAngle + Math.sin(time * 0.04) * 0.3;
+      // Shading kepala
+      const headGrad = ctx.createRadialGradient(
+        headX - headR*0.3, headY - headR*0.3, headR*0.1,
+        headX, headY, headR
+      );
+      headGrad.addColorStop(0, 'rgba(0,255,65,0.04)');
+      headGrad.addColorStop(0.6, 'rgba(0,30,0,0.02)');
+      headGrad.addColorStop(1, 'rgba(0,0,0,0.02)');
+      ctx.shadowBlur = 50;
+      ctx.shadowColor = 'rgba(0,255,65,0.02)';
+      ctx.fillStyle = headGrad;
+      ctx.beginPath();
+      ctx.arc(headX, headY, headR, 0, Math.PI*2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,255,65,0.02)';
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
 
-        // Tangan kanan (dadah)
-        ctx.save();
-        ctx.translate(handX, handY);
-        ctx.rotate(handAngleNow);
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = 'rgba(0,255,65,0.05)';
-        ctx.strokeStyle = 'rgba(0,255,65,0.08)';
-        ctx.lineWidth = 4;
+      // Rambut (3D — bentuk)
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = 'rgba(0,255,65,0.01)';
+      ctx.fillStyle = 'rgba(0,255,65,0.015)';
+      for (let i = 0; i < 12; i++) {
+        const angle = -Math.PI*0.6 + i/11 * Math.PI*1.2;
+        const r = headR * (0.8 + 0.2 * Math.sin(i*0.7 + time*0.01));
+        const x = headX + Math.cos(angle) * r * 0.9;
+        const y = headY + Math.sin(angle) * r * 0.8 - headR*0.2;
         ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(handLen, -handLen * 0.3);
-        ctx.stroke();
-        // Jari (lingkaran kecil)
-        ctx.fillStyle = 'rgba(0,255,65,0.04)';
-        ctx.beginPath();
-        ctx.arc(handLen, -handLen * 0.3, 10, 0, Math.PI * 2);
+        ctx.ellipse(x, y, headR*0.15, headR*0.25, angle*0.3, 0, Math.PI*2);
         ctx.fill();
-        ctx.restore();
+      }
 
-        // Tangan kiri (kiss - mendekati mulut)
-        const kissX = baseX - imgW * 0.3;
-        const kissY = baseY - imgH * 0.1 + Math.sin(time * 0.025) * 8;
-        ctx.save();
-        ctx.translate(kissX, kissY);
-        ctx.rotate(-0.5 + Math.sin(time * 0.02) * 0.1);
-        ctx.strokeStyle = 'rgba(255,100,150,0.06)';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(-40, -30);
-        ctx.stroke();
-        // Bibir kiss (lingkaran kecil)
-        ctx.fillStyle = 'rgba(255,100,150,0.05)';
-        ctx.beginPath();
-        ctx.arc(-40, -30, 8, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-
-        // Efek "kiss" (love)
-        if (kissPhase > 0) {
-          const loveSize = 20 + kissPhase * 10;
-          ctx.fillStyle = `rgba(255,100,150,${0.05 * kissPhase})`;
-          ctx.font = `${loveSize}px sans-serif`;
-          ctx.textAlign = 'center';
-          ctx.fillText('❤', baseX - imgW * 0.4, baseY - imgH * 0.3 - kissPhase * 20);
-        }
-
-      } else {
-        // Fallback: gambar anime sederhana (chibi)
+      // Mata anime (3D big eyes)
+      const eyeOff = headR * 0.25;
+      const eyeR = headR * 0.08;
+      for (let side = -1; side <= 1; side += 2) {
+        const ex = headX + side * eyeOff + Math.sin(time*0.01 + side)*2;
+        const ey = headY - headR*0.1 + Math.sin(time*0.02)*1;
+        // Putih mata
         ctx.shadowBlur = 30;
-        ctx.shadowColor = 'rgba(0,255,65,0.03)';
-        // Kepala (lingkaran)
-        const headR = Math.min(W, H) * 0.08;
-        ctx.fillStyle = 'rgba(0,255,65,0.02)';
+        ctx.shadowColor = 'rgba(0,255,65,0.02)';
+        ctx.fillStyle = 'rgba(0,20,0,0.03)';
         ctx.beginPath();
-        ctx.arc(baseX, baseY - headR * 0.8, headR, 0, Math.PI * 2);
+        ctx.ellipse(ex, ey, eyeR*1.2, eyeR*1.5, 0, 0, Math.PI*2);
         ctx.fill();
-        ctx.strokeStyle = 'rgba(0,255,65,0.04)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        // Badan
-        ctx.fillStyle = 'rgba(0,255,65,0.01)';
-        ctx.fillRect(baseX - headR * 0.5, baseY - headR * 0.2, headR, headR * 1.2);
-        // Tangan
-        ctx.strokeStyle = 'rgba(0,255,65,0.03)';
-        ctx.lineWidth = 2;
-        const armAngle = Math.sin(time * 0.03) * 0.3;
-        ctx.beginPath();
-        ctx.moveTo(baseX - headR * 0.5, baseY - headR * 0.1);
-        ctx.lineTo(baseX - headR * 1.2, baseY + headR * 0.2 + Math.sin(time * 0.02) * 10);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(baseX + headR * 0.5, baseY - headR * 0.1);
-        ctx.lineTo(baseX + headR * 1.2, baseY + headR * 0.2 + Math.cos(time * 0.025) * 10);
-        ctx.stroke();
-        // Mata anime (sederhana)
+        // Iris
         ctx.fillStyle = 'rgba(0,255,65,0.03)';
         ctx.beginPath();
-        ctx.arc(baseX - headR * 0.3, baseY - headR * 0.8, headR * 0.1, 0, Math.PI * 2);
+        ctx.arc(ex + side*2, ey, eyeR*0.6, 0, Math.PI*2);
         ctx.fill();
+        // Pupil
+        ctx.fillStyle = 'rgba(0,20,0,0.4)';
         ctx.beginPath();
-        ctx.arc(baseX + headR * 0.3, baseY - headR * 0.8, headR * 0.1, 0, Math.PI * 2);
+        ctx.arc(ex + side*3, ey, eyeR*0.3, 0, Math.PI*2);
+        ctx.fill();
+        // Highlight
+        ctx.fillStyle = 'rgba(255,255,255,0.02)';
+        ctx.beginPath();
+        ctx.arc(ex + side*2 - eyeR*0.2, ey - eyeR*0.3, eyeR*0.12, 0, Math.PI*2);
         ctx.fill();
       }
+
+      // Mulut (kecil)
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = 'rgba(255,100,150,0.02)';
+      ctx.beginPath();
+      ctx.arc(headX, headY + headR*0.3, headR*0.08, 0, Math.PI);
+      ctx.fill();
+
+      // ---- BADAN (3D) ----
+      const bodyW = 28 * scale;
+      const bodyH = 52 * scale;
+      const bodyX = headX;
+      const bodyY = headY + headR * 0.7 + breath * 30;
+
+      // Badan gradient 3D
+      const bodyGrad = ctx.createLinearGradient(bodyX - bodyW, bodyY, bodyX + bodyW, bodyY + bodyH);
+      bodyGrad.addColorStop(0, 'rgba(0,255,65,0.015)');
+      bodyGrad.addColorStop(0.5, 'rgba(0,40,0,0.01)');
+      bodyGrad.addColorStop(1, 'rgba(0,255,65,0.015)');
+      ctx.shadowBlur = 40;
+      ctx.shadowColor = 'rgba(0,255,65,0.01)';
+      ctx.fillStyle = bodyGrad;
+      ctx.beginPath();
+      ctx.ellipse(bodyX, bodyY + bodyH*0.4, bodyW, bodyH*0.5, 0, 0, Math.PI*2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,255,65,0.015)';
+      ctx.lineWidth = 0.3;
+      ctx.stroke();
+
+      // Dada (3D volume)
+      ctx.shadowBlur = 20;
+      ctx.fillStyle = 'rgba(0,255,65,0.015)';
+      ctx.beginPath();
+      ctx.ellipse(bodyX - bodyW*0.2, bodyY + bodyH*0.25, bodyW*0.3, bodyH*0.15, 0.2, 0, Math.PI*2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(bodyX + bodyW*0.2, bodyY + bodyH*0.25, bodyW*0.3, bodyH*0.15, -0.2, 0, Math.PI*2);
+      ctx.fill();
+
+      // ---- TANGAN (3D, bergerak aktif) ----
+      const armLen = 36 * scale;
+      const handWave = Math.sin(time * 0.03) * 0.4 + 0.3;
+
+      // Tangan kanan (melambai — dadah)
+      const rShoulderX = bodyX + bodyW * 0.7;
+      const rShoulderY = bodyY + bodyH*0.15 + Math.sin(time*0.02)*5;
+      const rElbowX = rShoulderX + Math.cos(1.2 + handWave*0.3) * armLen * 0.8;
+      const rElbowY = rShoulderY - Math.sin(1.2 + handWave*0.3) * armLen * 0.8 + Math.sin(time*0.025)*8;
+      const rHandX = rElbowX + Math.cos(0.8 + handWave*0.6) * armLen * 0.6;
+      const rHandY = rElbowY - Math.sin(0.8 + handWave*0.6) * armLen * 0.6 - 10;
+
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = 'rgba(0,255,65,0.01)';
+      ctx.strokeStyle = 'rgba(0,255,65,0.02)';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(rShoulderX, rShoulderY);
+      ctx.quadraticCurveTo(
+        rShoulderX + Math.cos(1.0+handWave*0.2)*armLen*0.5,
+        rShoulderY - Math.sin(1.0+handWave*0.2)*armLen*0.5 - 10,
+        rElbowX, rElbowY
+      );
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(rElbowX, rElbowY);
+      ctx.quadraticCurveTo(
+        rElbowX + Math.cos(0.7+handWave*0.4)*armLen*0.4,
+        rElbowY - Math.sin(0.7+handWave*0.4)*armLen*0.4 - 8,
+        rHandX, rHandY
+      );
+      ctx.stroke();
+      // Tangan (lingkaran)
+      ctx.fillStyle = 'rgba(0,255,65,0.02)';
+      ctx.beginPath();
+      ctx.arc(rHandX, rHandY, 8, 0, Math.PI*2);
+      ctx.fill();
+
+      // Tangan kiri (kiss)
+      const lShoulderX = bodyX - bodyW * 0.7;
+      const lShoulderY = bodyY + bodyH*0.15 + Math.sin(time*0.02+1)*5;
+      const lElbowX = lShoulderX - Math.cos(1.0 + Math.sin(time*0.02)*0.2) * armLen * 0.7;
+      const lElbowY = lShoulderY - Math.sin(1.0 + Math.sin(time*0.02)*0.2) * armLen * 0.7 + Math.sin(time*0.025+2)*8;
+      const lHandX = lElbowX - Math.cos(0.5 + Math.sin(time*0.015)*0.1) * armLen * 0.5;
+      const lHandY = lElbowY - Math.sin(0.5 + Math.sin(time*0.015)*0.1) * armLen * 0.5 - 12;
+
+      ctx.strokeStyle = 'rgba(255,100,150,0.02)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(lShoulderX, lShoulderY);
+      ctx.quadraticCurveTo(
+        lShoulderX - Math.cos(0.8)*armLen*0.4,
+        lShoulderY - Math.sin(0.8)*armLen*0.4 - 8,
+        lElbowX, lElbowY
+      );
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(lElbowX, lElbowY);
+      ctx.quadraticCurveTo(
+        lElbowX - Math.cos(0.4)*armLen*0.3,
+        lElbowY - Math.sin(0.4)*armLen*0.3 - 6,
+        lHandX, lHandY
+      );
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(255,100,150,0.02)';
+      ctx.beginPath();
+      ctx.arc(lHandX, lHandY, 7, 0, Math.PI*2);
+      ctx.fill();
+
+      // Efek kiss (love floating)
+      if (Math.sin(time*0.02) > 0.8) {
+        const loveSize = 14 + Math.sin(time*0.05)*6;
+        ctx.fillStyle = `rgba(255,100,150,${0.02 + 0.01 * Math.sin(time*0.03)})`;
+        ctx.font = `${loveSize}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText('❤', lHandX - 30, lHandY - 20 - Math.sin(time*0.04)*10);
+      }
+
+      // ---- KAKI (3D) ----
+      ctx.strokeStyle = 'rgba(0,255,65,0.01)';
+      ctx.lineWidth = 3;
+      const legSwing = Math.sin(time*0.02) * 0.1;
+      for (let side = -1; side <= 1; side += 2) {
+        const hipX = bodyX + side * bodyW * 0.4;
+        const hipY = bodyY + bodyH * 0.8;
+        const kneeX = hipX + side * 12 + Math.sin(time*0.025 + side)*6;
+        const kneeY = hipY + 30 + Math.sin(time*0.02 + side)*8;
+        const footX = kneeX + side * 8 + Math.sin(time*0.03 + side)*4;
+        const footY = kneeY + 30 + Math.cos(time*0.02 + side)*6;
+        ctx.beginPath();
+        ctx.moveTo(hipX, hipY);
+        ctx.quadraticCurveTo(
+          hipX + side*10 + Math.sin(time*0.01)*5,
+          hipY + 15,
+          kneeX, kneeY
+        );
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(kneeX, kneeY);
+        ctx.quadraticCurveTo(
+          kneeX + side*5 + Math.sin(time*0.015)*4,
+          kneeY + 15,
+          footX, footY
+        );
+        ctx.stroke();
+      }
+
+      // ---- PANGGILAN TEKS "ANIME LIVE" ----
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = 'rgba(0,255,65,0.015)';
+      ctx.font = '8px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('⬡ 3D ANIME LIVE ⬡', headX, headY - headR - 20);
     }
 
-    // ================================================================
-    // MAIN LOOP
-    // ================================================================
-    function draw() {
+    // ---- MAIN LOOP ----
+    function loop() {
       time++;
-      // Update pupil
-      pupilOffsetX += 0.004 * pupilDirection;
-      if (pupilOffsetX > 0.6 || pupilOffsetX < -0.6) pupilDirection *= -1;
 
-      // Blink random
+      // ---- UPDATE BLINK ----
       blinkTimer--;
       if (blinkTimer <= 0) {
-        if (blink < 0.5) {
-          blink = 1;
-          blinkTimer = Math.random() * 120 + 20;
+        if (blinkPhase < 0.5) {
+          blinkPhase = 1;
+          blinkTimer = Math.random() * 80 + 20;
         } else {
-          blink = 0;
-          blinkTimer = Math.random() * 200 + 100;
+          blinkPhase = 0;
+          blinkTimer = Math.random() * 150 + 80;
         }
       }
-      const blinkFactor = blink * (1 - Math.exp(-blinkTimer / 20));
+      const blink = blinkPhase * (1 - Math.exp(-blinkTimer / 15));
 
-      // Kiss phase
-      kissPhase = Math.max(0, kissPhase - 0.002);
-      if (Math.random() < 0.001) kissPhase = 1;
+      // ---- UPDATE PUPIL ----
+      pupilLX += 0.003 * pupilDir;
+      pupilRX += 0.003 * pupilDir;
+      if (Math.abs(pupilLX) > 0.7) pupilDir *= -1;
 
-      // Bersihkan canvas
+      // ---- CLEAR CANVAS ----
       ctx.clearRect(0, 0, W, H);
 
-      // Latar belakang gelap dengan gradien
-      const bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.6);
-      bg.addColorStop(0, '#0a1a0a');
-      bg.addColorStop(1, '#050a05');
-      ctx.fillStyle = bg;
+      // ---- BACKGROUND 3D (depth gradient) ----
+      const bgGrad = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.7);
+      bgGrad.addColorStop(0, '#0a1a0a');
+      bgGrad.addColorStop(0.5, '#070f07');
+      bgGrad.addColorStop(1, '#020502');
+      ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, W, H);
 
-      // --- GAMBAR MATA (kiri dan kanan) ---
-      const ew = eyeWidth();
-      const eh = eyeHeight();
-      const spacing = eyeSpacing();
-      const cx1 = W/2 - spacing/2;
-      const cx2 = W/2 + spacing/2;
-      const cy = H * 0.25;
+      // ---- GAMBAR 3D EYE (kiri & kanan) ----
+      const eyeSize = Math.min(W, H) * 0.11;
+      const eyeSpacing = eyeSize * 2.2;
+      const eyeY = H * 0.24;
 
-      drawEye(cx1, cy, ew, eh, blinkFactor);
-      drawEye(cx2, cy, ew, eh, blinkFactor);
+      drawEye3D(W/2 - eyeSpacing/2, eyeY, eyeSize, true, blink);
+      drawEye3D(W/2 + eyeSpacing/2, eyeY, eyeSize, false, blink);
 
-      // --- GAMBAR MULUT JOKER ---
-      drawJokerMouth(W/2, cy + eh * 0.7, ew);
+      // ---- GAMBAR MULUT JOKER ----
+      drawJokerMouth3D(W/2, eyeY + eyeSize * 0.85, eyeSize * 1.6);
 
-      // --- GAMBAR ANIME ---
-      drawAnime();
+      // ---- GAMBAR ANIME 3D ----
+      drawAnime3D();
 
-      // Text info
+      // ---- TEKS INFO (halus) ----
       ctx.shadowBlur = 0;
-      ctx.fillStyle = 'rgba(0,255,65,0.03)';
-      ctx.font = '10px monospace';
+      ctx.fillStyle = 'rgba(0,255,65,0.02)';
+      ctx.font = '9px monospace';
       ctx.textAlign = 'left';
-      ctx.fillText('⬡ live eye · anime · joker', 20, 30);
+      ctx.fillText('⬡ 3D LIVE · EYE + JOKER + ANIME', 20, 30);
+      ctx.fillText('⬡ HACKER OVERLAY AKTIF', 20, 46);
 
-      requestAnimationFrame(draw);
+      requestAnimationFrame(loop);
     }
-    draw();
+    loop();
 
     // ================================================================
-    // AUDIO CONTROLS
+    // AUDIO
     // ================================================================
     const audio = document.getElementById('bgAudio');
     const playBtn = document.getElementById('playBtn');
-    const volumeSlider = document.getElementById('volumeSlider');
+    const volSlider = document.getElementById('volumeSlider');
 
-    audio.volume = volumeSlider.value / 100;
+    audio.volume = volSlider.value / 100;
     audio.play().catch(() => {});
 
     playBtn.addEventListener('click', () => {
       if (audio.paused) {
         audio.play().catch(() => {});
-        playBtn.textContent = '⏸ pause';
+        playBtn.textContent = '⏸';
       } else {
         audio.pause();
-        playBtn.textContent = '▶ play';
+        playBtn.textContent = '▶';
       }
     });
-    volumeSlider.addEventListener('input', () => {
-      audio.volume = volumeSlider.value / 100;
+    volSlider.addEventListener('input', () => {
+      audio.volume = volSlider.value / 100;
     });
 
     // ================================================================
-    // SPAM LOGIC (minimal, real API call)
+    // SPAM
     // ================================================================
     const phoneInput = document.getElementById('phoneInput');
     const btnSend = document.getElementById('btnSend');
@@ -541,8 +801,8 @@
 
     btnSend.addEventListener('click', () => {
       const raw = phoneInput.value.trim();
-      if (!raw) { statusEl.textContent = '❌ masukkan nomor'; return; }
-      statusEl.textContent = '⏳ mengirim...';
+      if (!raw) { statusEl.textContent = '❌ nomor kosong'; return; }
+      statusEl.textContent = '⏳ sending...';
       btnSend.disabled = true;
 
       fetch('/api/spam', {
@@ -552,7 +812,7 @@
       })
       .then(res => res.json())
       .then(data => {
-        statusEl.textContent = '✅ selesai! ' + (data.success ? 'sukses' : 'gagal');
+        statusEl.textContent = data.success ? '✅ sukses' : '❌ gagal';
         btnSend.disabled = false;
       })
       .catch(err => {
@@ -561,9 +821,8 @@
       });
     });
 
-    console.log('🚀 D4 BRAZIL · Live Eye + Anime loaded.');
-    console.log('💡 Ganti gambar anime dengan mengubah animeImg.src');
-    console.log('💡 Ganti lagu dengan mengubah src di <audio>');
+    console.log('🚀 D4 BRAZIL · 3D Live Eye + Joker + Anime loaded.');
+    console.log('💡 Semua animasi 3D dengan shading, depth, bulu mata, dan gerakan real.');
   </script>
 </body>
 </html>
